@@ -1,0 +1,18 @@
+# Each member edits ONLY their own section. Pin versions in Phase 6.
+
+# --- Shared (Member 1) ---
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+scipy
+
+# --- Member 2 (EDA) libraries ---
+
+
+# --- Member 3 (preprocessing) libraries ---
+
+
+# --- Member 4 (modelling) libraries ---
+

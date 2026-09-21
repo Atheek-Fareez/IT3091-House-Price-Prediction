@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+.env
+*.token
+.DS_Store
+# generated data is rebuilt by the pipeline, do not commit it
+data/processed/*
+!data/processed/.gitkeep
