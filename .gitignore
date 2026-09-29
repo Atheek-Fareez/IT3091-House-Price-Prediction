@@ -5,6 +5,10 @@ __pycache__/
 .env
 *.token
 .DS_Store
-# generated data is rebuilt by the pipeline, do not commit it
+# generated data is ignored except the required Member 3 handover
 data/processed/*
 !data/processed/.gitkeep
+!data/processed/member_03/
+!data/processed/member_03/**
+
+Temp/

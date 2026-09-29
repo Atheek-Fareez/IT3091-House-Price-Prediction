@@ -1,0 +1,13 @@
+Stage,Feature_Count,Notes
+Raw training columns,81,"Includes target, Id and audit-only transaction fields."
+Raw predictor columns excluding Id and target,79,Before five prediction-availability exclusions.
+Default property predictors,74,Raw input allowlist; no target or transaction fields.
+Engineered presence flags,5,Target-free presence with separate unknown-status indicators.
+Engineered area/bath aggregates,4,"Deterministic quantities, derived after imputation."
+Missingness/consistency indicators,52,Schema-defined flags; some may be constant in a fold.
+Prepared columns before encoding,135,Includes the 74 source properties and derived features.
+"Encoded features, unscaled verification fit",297,Fit on 1168 temporary verification-training rows only; fold-dependent.
+"Encoded features, scaled verification fit",297,Same semantic definitions and fit rows; fold-dependent.
+Full-training unscaled transformed predictors,300,Vocabulary fitted on all 1460 raw training predictor rows; inspection/final-fit/demo only.
+train_preprocessed.csv,300,1460 rows x 302 columns; Id first; SalePrice last; full-training preprocessing; NOT CV input.
+test_preprocessed.csv,300,1459 rows x 301 columns; Id first; no target; full-training preprocessing; NOT CV input.
