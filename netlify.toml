@@ -1,0 +1,8 @@
+# Netlify Configuration for IT3091 ML Pipeline Dashboard
+[build]
+  publish = "docs/dashboard"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
