@@ -10,38 +10,37 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg-primary:    #0a0812;
-      --bg-surface:    #120e1e;
-      --bg-card:       rgba(21, 16, 34, 0.76);
-      --bg-card-hover: rgba(32, 24, 52, 0.88);
-      --border:        rgba(255, 255, 255, 0.08);
-      --border-bright: rgba(217, 70, 239, 0.35);
-      --border-glow:   rgba(236, 72, 153, 0.5);
+      --bg-primary:    #0a0407;
+      --bg-card:       rgba(22, 9, 14, 0.75);
+      --bg-card-hover: rgba(34, 14, 22, 0.90);
+      --border:        rgba(225, 29, 72, 0.14);
+      --border-bright: rgba(244, 63, 94, 0.35);
       --text-primary:  #ffffff;
-      --text-secondary:#9d99ae;
-      --text-muted:    #635f75;
-      
-      /* Signature Neon Magenta / Fuchsia / Violet Theme (from reference) */
-      --accent-pink:    #ec4899;
-      --accent-magenta: #d946ef;
-      --accent-fuchsia: #c026d3;
-      --accent-violet:  #8b5cf6;
-      --accent-purple:  #a855f7;
-      --accent-cyan:    #38bdf8;
-      --accent-blue:    #6366f1;
-      --accent-green:   #10b981;
-      --accent-orange:  #fb923c;
-      --accent-red:     #f43f5e;
-      --gold:           #fbbf24;
-
-      /* Model Identity Colors */
-      --baseline-col:   #f43f5e;
-      --rf-col:         #8b5cf6;
-      --xgb-col:        #ec4899;
-
-      --glow-pink:      0 0 35px rgba(236, 72, 153, 0.38);
-      --glow-magenta:   0 0 35px rgba(217, 70, 239, 0.35);
-      --glow-violet:    0 0 35px rgba(139, 92, 246, 0.3);
+      --text-secondary:#a89299;
+      --text-muted:    #6b535b;
+      --accent-crimson:#e11d48;
+      --accent-cherry: #f43f5e;
+      --accent-ruby:   #be123c;
+      --accent-emerald:#10b981;
+      --accent-amber:  #f59e0b;
+      --accent-blue:   #f43f5e;
+      --accent-purple: #be123c;
+      --accent-green:  #10b981;
+      --accent-orange: #fb923c;
+      --accent-red:    #e11d48;
+      --accent-cyan:   #f43f5e;
+      --gold:          #fbbf24;
+      --baseline-col:  #fb923c;
+      --rf-col:        #fb7185;
+      --xgb-col:       #e11d48;
+      --glow-crimson:  0 0 25px rgba(225, 29, 72, 0.35);
+      --glow-ruby:     0 0 30px rgba(190, 18, 60, 0.25);
+      --glow-magenta:  0 0 25px rgba(225, 29, 72, 0.35);
+      --glow-violet:   0 0 30px rgba(190, 18, 60, 0.25);
+      --glow-fuchsia:  0 0 25px rgba(244, 63, 94, 0.30);
+      --glow-green:    0 0 25px rgba(16, 185, 129, 0.30);
+      --glow-blue:     0 0 25px rgba(225, 29, 72, 0.35);
+      --glow-purple:   0 0 25px rgba(190, 18, 60, 0.25);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -56,32 +55,30 @@
       overflow-x: hidden;
     }
 
-    /* ── BACKGROUND GRADIENT ORBS (Vibrant Magenta Spotlight) ── */
+    /* ── BACKGROUND GRADIENT ORBS (Nexora Crimson Silk Aura) ── */
     body::before {
       content: '';
       position: fixed;
-      top: -120px; left: -120px;
+      top: -200px; left: -200px;
       width: 750px; height: 750px;
-      background: radial-gradient(circle, rgba(217, 70, 239, 0.28) 0%, rgba(192, 38, 211, 0.12) 38%, transparent 68%);
+      background: radial-gradient(circle, rgba(225, 29, 72, 0.14) 0%, rgba(190, 18, 60, 0.05) 50%, transparent 70%);
       pointer-events: none; z-index: 0;
-      filter: blur(35px);
     }
     body::after {
       content: '';
       position: fixed;
-      bottom: -160px; right: -160px;
-      width: 720px; height: 720px;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.18) 0%, rgba(236, 72, 153, 0.08) 46%, transparent 70%);
+      bottom: -200px; right: -200px;
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(244, 63, 94, 0.10) 0%, rgba(159, 18, 57, 0.04) 50%, transparent 70%);
       pointer-events: none; z-index: 0;
-      filter: blur(40px);
     }
 
     /* ── HEADER ── */
     header {
       position: relative; z-index: 10;
-      background: rgba(10, 8, 18, 0.88);
+      background: rgba(10, 4, 7, 0.96);
       backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid rgba(225, 29, 72, 0.15);
       padding: 20px 40px;
       display: flex;
       align-items: center;
@@ -95,9 +92,9 @@
       font-weight: 600;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: #f472b6;
-      background: rgba(217, 70, 239, 0.15);
-      border: 1px solid rgba(217, 70, 239, 0.35);
+      color: #f43f5e;
+      background: rgba(225, 29, 72, 0.12);
+      border: 1px solid rgba(225, 29, 72, 0.30);
       border-radius: 20px;
       padding: 4px 12px;
       display: inline-block;
@@ -106,7 +103,7 @@
     .header-left h1 {
       font-size: 22px;
       font-weight: 800;
-      background: linear-gradient(135deg, #ffffff 15%, #f472b6 60%, #c026d3 100%);
+      background: linear-gradient(135deg, #ffffff 20%, #f43f5e 65%, #e11d48 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -131,9 +128,9 @@
       border-radius: 20px;
       padding: 5px 12px;
       white-space: nowrap;
-      transition: all 0.2s;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .team-pill:hover { border-color: rgba(217, 70, 239, 0.4); transform: translateY(-1px); }
+    .team-pill:hover { border-color: var(--border-bright); background: var(--bg-card-hover); }
     .team-pill span { color: var(--text-primary); font-weight: 600; }
 
     /* ── NAV TABS ── */
@@ -141,9 +138,9 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(10, 8, 18, 0.92);
+      background: rgba(10, 4, 7, 0.95);
       backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid rgba(225, 29, 72, 0.14);
       padding: 10px 40px;
     }
     .tab-bar {
@@ -153,27 +150,27 @@
       max-width: 1400px;
       margin: 0 auto;
       overflow-x: auto;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
+      scrollbar-width: none; /* Firefox: completely hide scrollbar */
+      -ms-overflow-style: none; /* IE/Edge */
     }
     .tab-bar::-webkit-scrollbar {
-      display: none;
+      display: none; /* Chrome, Safari, Opera: completely hide scrollbar */
       width: 0;
       height: 0;
     }
     .tab-btn {
       background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border);
       color: var(--text-secondary);
       font-family: 'Inter', sans-serif;
       font-size: 12.5px;
       font-weight: 500;
-      padding: 8px 16px;
-      border-radius: 12px;
+      padding: 8px 15px;
+      border-radius: 10px;
       cursor: pointer;
       position: relative;
       white-space: nowrap;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -181,15 +178,15 @@
     }
     .tab-btn:hover {
       color: #ffffff;
-      background: rgba(217, 70, 239, 0.12);
-      border-color: rgba(217, 70, 239, 0.35);
+      background: rgba(225, 29, 72, 0.12);
+      border-color: var(--border-bright);
       transform: translateY(-1px);
     }
     .tab-btn.active {
-      color: #ffffff;
-      background: linear-gradient(90deg, #c026d3 0%, #ec4899 100%);
-      border-color: rgba(236, 72, 153, 0.6);
-      box-shadow: 0 0 25px rgba(217, 70, 239, 0.45);
+      color: #fff;
+      background: linear-gradient(135deg, #e11d48, #be123c);
+      border-color: #f43f5e;
+      box-shadow: 0 4px 18px rgba(225, 29, 72, 0.40);
       font-weight: 600;
     }
 
@@ -263,31 +260,30 @@
     }
     .model-card:hover { transform: translateY(-4px); }
     .model-card.baseline {
-      background: linear-gradient(135deg, rgba(244,63,94,0.14), rgba(21,16,34,0.6));
-      border: 1px solid rgba(244,63,94,0.25);
+      background: linear-gradient(135deg, rgba(251,146,60,0.10), rgba(225,29,72,0.04));
+      border: 1px solid rgba(251,146,60,0.22);
     }
     .model-card.rf {
-      background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(21,16,34,0.6));
-      border: 1px solid rgba(139,92,246,0.3);
+      background: linear-gradient(135deg, rgba(251,113,133,0.12), rgba(190,18,60,0.06));
+      border: 1px solid rgba(251,113,133,0.25);
     }
     .model-card.xgb {
-      background: radial-gradient(circle at top left, rgba(217,70,239,0.2) 0%, rgba(21,16,34,0.85) 75%);
-      border: 1px solid rgba(236,72,153,0.45);
-      box-shadow: var(--glow-pink);
+      background: linear-gradient(135deg, rgba(225,29,72,0.20), rgba(190,18,60,0.08));
+      border: 1px solid rgba(244,63,94,0.45);
+      box-shadow: var(--glow-crimson);
     }
 
     .model-card .winner-badge {
       position: absolute;
       top: 16px; right: 16px;
-      background: linear-gradient(90deg, #c026d3, #ec4899);
-      color: #ffffff;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #000;
       font-size: 10px;
       font-weight: 700;
       letter-spacing: 1px;
       text-transform: uppercase;
-      padding: 4px 12px;
+      padding: 4px 10px;
       border-radius: 20px;
-      box-shadow: 0 0 15px rgba(236,72,153,0.5);
     }
 
     .model-card .model-icon {
@@ -297,9 +293,9 @@
       font-size: 20px;
       margin-bottom: 14px;
     }
-    .model-card.baseline .model-icon { background: rgba(244,63,94,0.18); }
-    .model-card.rf .model-icon       { background: rgba(139,92,246,0.18); }
-    .model-card.xgb .model-icon      { background: rgba(236,72,153,0.2); }
+    .model-card.baseline .model-icon { background: rgba(251,146,60,0.15); }
+    .model-card.rf .model-icon       { background: rgba(251,113,133,0.15); }
+    .model-card.xgb .model-icon      { background: rgba(225,29,72,0.20); }
 
     .model-card h3 {
       font-size: 16px;
@@ -326,9 +322,9 @@
       font-size: 14px;
       font-weight: 600;
     }
-    .metric-value.good { color: var(--accent-green); }
-    .metric-value.ok   { color: var(--accent-blue); }
-    .metric-value.bad  { color: var(--accent-red); }
+    .metric-value.good { color: #f43f5e; }
+    .metric-value.ok   { color: #fb7185; }
+    .metric-value.bad  { color: #fb923c; }
 
     /* ── STAT PILLS ── */
     .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
@@ -338,10 +334,11 @@
       border-radius: 14px;
       padding: 18px 20px;
       text-align: center;
-      transition: transform 0.2s, border-color 0.2s;
+      transition: transform 0.2s, border-color 0.2s, background 0.2s;
     }
     .stat-pill:hover {
       transform: translateY(-2px);
+      background: var(--bg-card-hover);
       border-color: var(--border-bright);
     }
     .stat-pill .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
@@ -376,7 +373,7 @@
     .pipeline-step-card:hover {
       transform: translateY(-3px);
       background: var(--bg-card-hover);
-      border-color: var(--accent-blue);
+      border-color: #f43f5e;
     }
     .step-badge {
       display: inline-flex;
@@ -384,8 +381,8 @@
       justify-content: center;
       width: 26px; height: 26px;
       border-radius: 50%;
-      background: rgba(79,156,249,0.15);
-      color: var(--accent-blue);
+      background: rgba(225,29,72,0.16);
+      color: #f43f5e;
       font-size: 12px;
       font-weight: 700;
       margin-bottom: 12px;
@@ -412,7 +409,7 @@
       align-self: flex-start;
     }
 
-    /* ── BADGES & PILLS ── */
+    /* ── BADGES & PILLS (Nexora style) ── */
     .pill {
       display: inline-block;
       padding: 3px 9px;
@@ -421,13 +418,12 @@
       font-weight: 600;
       letter-spacing: 0.5px;
     }
-    .pill-blue   { background: rgba(79,156,249,0.15); color: var(--accent-blue); border: 1px solid rgba(79,156,249,0.25); }
-    .pill-green  { background: rgba(52,211,153,0.15); color: var(--accent-green); border: 1px solid rgba(52,211,153,0.25); }
-    .pill-pink   { background: rgba(236,72,153,0.18); color: #f472b6; border: 1px solid rgba(236,72,153,0.35); box-shadow: 0 0 12px rgba(236,72,153,0.25); }
-    .pill-orange { background: rgba(251,146,60,0.15); color: var(--accent-orange); border: 1px solid rgba(251,146,60,0.25); }
-    .pill-purple { background: rgba(167,139,250,0.15); color: var(--accent-purple); border: 1px solid rgba(167,139,250,0.25); }
-    .pill-red    { background: rgba(248,113,113,0.15); color: var(--accent-red); border: 1px solid rgba(248,113,113,0.25); }
-    .pill-gold   { background: rgba(251,191,36,0.15); color: var(--gold); border: 1px solid rgba(251,191,36,0.25); }
+    .pill-blue   { background: rgba(251,113,133,0.15); color: #fb7185; border: 1px solid rgba(251,113,133,0.28); }
+    .pill-green  { background: rgba(16,185,129,0.15);  color: #10b981; border: 1px solid rgba(16,185,129,0.28); }
+    .pill-orange { background: rgba(251,146,60,0.15);  color: var(--accent-orange); border: 1px solid rgba(251,146,60,0.25); }
+    .pill-purple { background: rgba(225,29,72,0.15);   color: #f43f5e; border: 1px solid rgba(225,29,72,0.28); }
+    .pill-red    { background: rgba(225,29,72,0.16);   color: #f43f5e; border: 1px solid rgba(225,29,72,0.30); }
+    .pill-gold   { background: rgba(251,191,36,0.15);  color: var(--gold); border: 1px solid rgba(251,191,36,0.25); }
 
     /* ── INSIGHT / BANNER BOXES ── */
     .callout-box {
@@ -440,16 +436,16 @@
       line-height: 1.6;
     }
     .callout-box.info {
-      background: linear-gradient(135deg, rgba(79,156,249,0.08), rgba(167,139,250,0.05));
-      border: 1px solid rgba(79,156,249,0.2);
+      background: linear-gradient(135deg, rgba(225,29,72,0.09), rgba(190,18,60,0.05));
+      border: 1px solid rgba(225,29,72,0.22);
     }
     .callout-box.warn {
       background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(251,146,60,0.05));
       border: 1px solid rgba(251,191,36,0.25);
     }
     .callout-box.success {
-      background: linear-gradient(135deg, rgba(217,70,239,0.12), rgba(139,92,246,0.06));
-      border: 1px solid rgba(236,72,153,0.3);
+      background: linear-gradient(135deg, rgba(16,185,129,0.10), rgba(225,29,72,0.05));
+      border: 1px solid rgba(16,185,129,0.28);
     }
     .callout-icon { font-size: 24px; line-height: 1; }
     .callout-content h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--text-primary); }
@@ -484,12 +480,12 @@
 
     /* ── VERDICT CARD ── */
     .verdict-card {
-      background: radial-gradient(circle at top left, rgba(217,70,239,0.16) 0%, rgba(21,16,34,0.9) 70%);
-      border: 1px solid rgba(236,72,153,0.35);
+      background: linear-gradient(135deg, rgba(225,29,72,0.14), rgba(190,18,60,0.08));
+      border: 1px solid rgba(244,63,94,0.35);
       border-radius: 20px;
       padding: 32px;
       margin-top: 8px;
-      box-shadow: 0 0 35px rgba(217,70,239,0.15);
+      box-shadow: 0 0 40px rgba(225,29,72,0.18);
     }
     .verdict-card h2 {
       font-size: 20px;
@@ -529,16 +525,15 @@
     }
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: rgba(255,255,255,0.02); }
-    .best-cell { color: #f472b6; font-weight: 600; text-shadow: 0 0 10px rgba(236,72,153,0.3); }
-    .worst-cell { color: var(--accent-red); }
+    .best-cell { color: #f43f5e; font-weight: 600; }
+    .worst-cell { color: #fb923c; }
     .td-label { font-family: 'Inter', sans-serif; font-weight: 500; color: var(--text-primary); }
 
     /* ── FOLD TABLE ── */
     .fold-badge {
       display: inline-block;
-      background: rgba(217,70,239,0.16);
-      color: #f472b6;
-      border: 1px solid rgba(217,70,239,0.3);
+      background: rgba(225,29,72,0.16);
+      color: #fb7185;
       border-radius: 6px;
       padding: 2px 8px;
       font-size: 11px;
@@ -587,12 +582,11 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       font-weight: 600;
-      color: #f472b6;
-      background: rgba(236, 72, 153, 0.15);
+      color: #f43f5e;
+      background: rgba(225, 29, 72, 0.12);
       padding: 2px 8px;
       border-radius: 6px;
-      border: 1px solid rgba(236, 72, 153, 0.35);
-      box-shadow: 0 0 10px rgba(236, 72, 153, 0.2);
+      border: 1px solid rgba(225, 29, 72, 0.28);
     }
     input[type=range] {
       -webkit-appearance: none;
@@ -609,14 +603,14 @@
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      background: #ec4899;
+      background: linear-gradient(135deg, #f43f5e, #e11d48);
       cursor: pointer;
-      box-shadow: 0 0 14px rgba(236, 72, 153, 0.65);
+      box-shadow: 0 0 14px rgba(225, 29, 72, 0.60);
       transition: transform 0.15s, background 0.15s;
     }
     input[type=range]::-webkit-slider-thumb:hover {
       transform: scale(1.2);
-      background: #f472b6;
+      background: linear-gradient(135deg, #ff1e56, #f43f5e);
     }
     .form-select, .form-input {
       width: 100%;
@@ -628,16 +622,15 @@
       font-family: 'Inter', sans-serif;
       font-size: 13px;
       outline: none;
-      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s, background 0.2s;
     }
     .form-select:focus, .form-input:focus {
-      border-color: #ec4899;
-      box-shadow: 0 0 14px rgba(236, 72, 153, 0.3);
-      background: rgba(255, 255, 255, 0.08);
+      border-color: #f43f5e;
+      background: rgba(225, 29, 72, 0.06);
     }
     .form-select option {
-      background: #0d1322;
-      color: #f0f4ff;
+      background: #16080d;
+      color: #ffffff;
     }
     .preset-btn {
       background: rgba(255, 255, 255, 0.04);
@@ -651,8 +644,8 @@
       transition: all 0.2s;
     }
     .preset-btn:hover {
-      background: rgba(255, 255, 255, 0.09);
-      color: var(--text-primary);
+      background: rgba(225, 29, 72, 0.12);
+      color: #ffffff;
       border-color: var(--border-bright);
     }
     .model-selector-bar {
@@ -676,39 +669,40 @@
       gap: 8px;
     }
     .model-selector-pill:hover {
-      color: var(--text-primary);
+      color: #ffffff;
+      background: rgba(225, 29, 72, 0.10);
       border-color: var(--border-bright);
     }
     .model-selector-pill.active {
       color: #fff;
-      background: linear-gradient(90deg, #c026d3 0%, #ec4899 100%);
-      border-color: #ec4899;
-      box-shadow: 0 0 20px rgba(217, 70, 239, 0.4);
+      background: linear-gradient(135deg, #e11d48, #be123c);
+      border-color: #f43f5e;
+      box-shadow: 0 0 18px rgba(225, 29, 72, 0.38);
     }
     .model-selector-pill.active.rf {
-      background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
-      border-color: #8b5cf6;
-      box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+      background: linear-gradient(135deg, rgba(251, 113, 133, 0.35), rgba(190, 18, 60, 0.25));
+      border-color: #fb7185;
+      box-shadow: 0 0 18px rgba(251, 113, 133, 0.30);
     }
     .model-selector-pill.active.baseline {
-      background: linear-gradient(90deg, #e11d48 0%, #f43f5e 100%);
-      border-color: #f43f5e;
-      box-shadow: 0 0 20px rgba(244, 63, 94, 0.4);
+      background: linear-gradient(135deg, rgba(251, 146, 60, 0.25), rgba(244, 63, 94, 0.18));
+      border-color: #fb923c;
+      box-shadow: 0 0 18px rgba(251, 146, 60, 0.25);
     }
     .price-hero-card {
-      background: radial-gradient(circle at top left, rgba(217, 70, 239, 0.22) 0%, rgba(18, 14, 30, 0.95) 75%);
-      border: 1px solid rgba(236, 72, 153, 0.45);
+      background: linear-gradient(135deg, rgba(28, 10, 16, 0.98), rgba(16, 6, 10, 0.98));
+      border: 1px solid rgba(225, 29, 72, 0.38);
       border-radius: 20px;
       padding: 28px;
       position: sticky;
       top: 70px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(236, 72, 153, 0.2);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(225, 29, 72, 0.18);
     }
     .price-hero-val {
       font-size: 38px;
       font-weight: 800;
       font-family: 'JetBrains Mono', monospace;
-      background: linear-gradient(135deg, #ffffff 15%, #f472b6 60%, #d946ef 100%);
+      background: linear-gradient(135deg, #ffffff, #f43f5e, #e11d48);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -725,8 +719,8 @@
       border: 1px solid var(--border);
     }
     .model-comp-row.highlight {
-      border-color: var(--accent-pink);
-      background: rgba(236, 72, 153, 0.1);
+      border-color: #f43f5e;
+      background: rgba(225, 29, 72, 0.10);
     }
 
     /* ── ANIMATIONS ── */
@@ -765,6 +759,10 @@
     <p>Ames Housing Dataset · Exploratory Analysis · Preprocessing · 3 Models Evaluated</p>
   </div>
   <div class="header-right">
+    <div id="header-backend-pill" class="team-pill" style="border-color: rgba(251,146,60,0.35); background: rgba(251,146,60,0.12); color: #fb923c; font-weight:600;">
+      <span id="header-backend-dot" style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#fb923c; margin-right:5px;"></span>
+      <span id="header-backend-text">API: Offline (Client Simulator)</span>
+    </div>
     <div class="team-pill">M1 <span>Atheek Fareez</span> · XGBoost</div>
     <div class="team-pill">M2 <span>Wijesiri</span> · EDA & Data Quality</div>
     <div class="team-pill">M3 <span>Wazni Ahamed</span> · Preprocessing & RF</div>
@@ -782,7 +780,7 @@
     <button class="tab-btn"        id="tab-features" onclick="switchTab('features')">🔍 Features</button>
     <button class="tab-btn"        id="tab-cv"       onclick="switchTab('cv')">🔄 Cross-Val</button>
     <button class="tab-btn"        id="tab-details"  onclick="switchTab('details')">📋 Model Specs</button>
-    <button class="tab-btn"        id="tab-predict"  onclick="switchTab('predict')">🏡 Live Estimator</button>
+    <button class="tab-btn"        id="tab-predict"  onclick="switchTab('predict')">🏡 Valuation Simulator</button>
     <button class="tab-btn"        id="tab-verdict"  onclick="switchTab('verdict')">🏆 Final Verdict</button>
   </div>
 </div>
@@ -1411,8 +1409,8 @@
             <td class="worst-cell">0.143</td>
             <td>Wazni Ahamed (Member 3)</td>
           </tr>
-          <tr style="background:rgba(236,72,153,0.08); font-weight:600">
-            <td class="td-label" style="color:var(--accent-pink)">⚡ XGBoost</td>
+          <tr style="background:rgba(52,211,153,0.06); font-weight:600">
+            <td class="td-label" style="color:var(--accent-green)">⚡ XGBoost</td>
             <td>Gradient Boosted Trees</td>
             <td class="best-cell">$29,675 ✓</td>
             <td class="best-cell">$14,831 ✓</td>
@@ -1631,8 +1629,8 @@
 
     <div class="grid-2" style="margin-bottom:20px">
       <!-- XGBoost params -->
-      <div class="card" style="border-color:rgba(236,72,153,0.4); box-shadow: var(--glow-pink)">
-        <div class="card-title" style="color:var(--accent-pink)">⚡ XGBoost Regressor (Atheek Fareez · IT24103933)</div>
+      <div class="card" style="border-color:rgba(52,211,153,0.3)">
+        <div class="card-title" style="color:var(--accent-green)">⚡ XGBoost Regressor (Atheek Fareez · IT24103933)</div>
         <table>
           <tbody>
             <tr><td class="td-label">n_estimators</td><td class="best-cell">300</td></tr>
@@ -1687,10 +1685,16 @@
   <!-- ━━━━━━━━━━━━━━━━━━━━━━ TAB 8: LIVE PREDICTOR ━━━━━━━━━━━━━━━━━━━━━━ -->
   <div class="tab-panel" id="panel-predict">
 
-    <div class="section-title">Interactive Application · Client Valuation Engine</div>
-    <div class="section-heading">Live Property Price Predictor</div>
+    <div class="section-title">Interactive Application · Production Model Serving</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:8px;">
+      <div class="section-heading" style="margin-bottom:0;">Live Property Price Predictor</div>
+      <div id="backend-status-pill" class="pill" style="background:rgba(251,146,60,0.12); color:#fb923c; border:1px solid rgba(251,146,60,0.30); font-size:11.5px; padding:6px 14px; font-weight:600; display:inline-flex; align-items:center; gap:8px;">
+        <span id="backend-status-dot" style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#fb923c;"></span>
+        <span id="backend-status-text">Client Simulator Mode · (Run python app.py for Live .joblib API)</span>
+      </div>
+    </div>
     <div class="section-sub">
-      Test and compare predictions across our 3 machine learning models in real time. Adjust property attributes, finishes, and location below to see how each model calculates home value.
+      Test and compare predictions across our 3 machine learning models in real time. Powered by our trained <code>.joblib</code> pipelines (XGBoost & Random Forest) via FastAPI backend, with instant client-side calculation fallback.
     </div>
 
     <!-- Model Selector Bar -->
@@ -2046,22 +2050,20 @@
 const DATA = {
   models: ['Baseline', 'Random Forest', 'XGBoost'],
   colors: {
-    baseline: 'rgba(244,63,94,0.85)',
-    rf:       'rgba(139,92,246,0.85)',
-    xgb:      'rgba(236,72,153,0.95)',
-    baselineBorder: '#f43f5e',
-    rfBorder:       '#8b5cf6',
-    xgbBorder:      '#ec4899',
-    pink:     'rgba(236,72,153,0.85)',
-    pinkBorder: '#ec4899',
-    magenta:  'rgba(217,70,239,0.85)',
-    magentaBorder: '#d946ef',
-    violet:   'rgba(139,92,246,0.85)',
-    violetBorder: '#8b5cf6',
-    cyan:     'rgba(56,189,248,0.85)',
-    cyanBorder: '#38bdf8',
+    baseline: 'rgba(251,146,60,0.85)',
+    rf:       'rgba(251,113,133,0.85)',
+    xgb:      'rgba(225,29,72,0.90)',
+    baselineBorder: '#fb923c',
+    rfBorder:       '#fb7185',
+    xgbBorder:      '#f43f5e',
+    purple:   'rgba(225,29,72,0.85)',
+    purpleBorder: '#f43f5e',
+    cyan:     'rgba(244,63,94,0.85)',
+    cyanBorder: '#f43f5e',
     orange:   'rgba(251,146,60,0.85)',
     orangeBorder: '#fb923c',
+    emerald:  'rgba(16,185,129,0.85)',
+    emeraldBorder: '#10b981',
   },
   rmse:  [81448, 30815, 29675],
   mae:   [55656, 17506, 14831],
@@ -2112,7 +2114,7 @@ const DATA = {
 };
 
 /* ───────── CHART DEFAULTS ───────── */
-Chart.defaults.color = '#8892a4';
+Chart.defaults.color = '#a89299';
 Chart.defaults.font.family = "'Inter', sans-serif";
 Chart.defaults.plugins.legend.display = false;
 
@@ -2216,10 +2218,10 @@ function initEDACharts() {
         datasets: [{
           data: DATA.eda.priceBins.counts,
           backgroundColor: DATA.eda.priceBins.counts.map((c, i) =>
-            i === 1 || i === 2 ? 'rgba(236,72,153,0.95)' : 'rgba(139,92,246,0.38)'
+            i === 1 || i === 2 ? 'rgba(225,29,72,0.90)' : 'rgba(190,18,60,0.65)'
           ),
           borderColor: DATA.eda.priceBins.counts.map((c, i) =>
-            i === 1 || i === 2 ? '#ec4899' : '#8b5cf6'
+            i === 1 || i === 2 ? '#f43f5e' : '#be123c'
           ),
           borderWidth: 1.5,
           borderRadius: 6,
@@ -2253,9 +2255,9 @@ function initEDACharts() {
         datasets: [{
           data: DATA.eda.correlations.values,
           backgroundColor: DATA.eda.correlations.values.map(v =>
-            `rgba(217,70,239,${0.35 + v * 0.65})`
+            `rgba(225,29,72,${0.30 + v * 0.70})`
           ),
-          borderColor: '#d946ef',
+          borderColor: '#f43f5e',
           borderWidth: 1.5,
           borderRadius: 6,
         }]
@@ -2285,10 +2287,10 @@ function initEDACharts() {
         datasets: [{
           data: DATA.eda.missing.pcts,
           backgroundColor: DATA.eda.missing.labels.map(l =>
-            l.includes('LotFrontage') ? 'rgba(244,63,94,0.85)' : 'rgba(192,38,211,0.75)'
+            l.includes('LotFrontage') ? 'rgba(251,146,60,0.85)' : 'rgba(225,29,72,0.80)'
           ),
           borderColor: DATA.eda.missing.labels.map(l =>
-            l.includes('LotFrontage') ? '#f43f5e' : '#c026d3'
+            l.includes('LotFrontage') ? '#fb923c' : '#f43f5e'
           ),
           borderWidth: 1.5,
           borderRadius: 6,
@@ -2323,9 +2325,9 @@ function initEDACharts() {
         datasets: [{
           data: DATA.eda.qualityPrices.medians,
           backgroundColor: DATA.eda.qualityPrices.medians.map((v, i) =>
-            `hsl(${280 + i * 7}, 85%, ${50 + i * 2}%)`
+            `hsl(${350 - i * 4}, 82%, ${45 + i * 2.5}%)`
           ),
-          borderColor: '#ec4899',
+          borderColor: '#f43f5e',
           borderWidth: 1.5,
           borderRadius: 6,
         }]
@@ -2354,11 +2356,11 @@ function initEDACharts() {
         datasets: [{
           data: DATA.eda.neighborhoods.medians,
           backgroundColor: DATA.eda.neighborhoods.medians.map(m =>
-            m > 250000 ? 'rgba(236,72,153,0.9)' :
-            m > 170000 ? 'rgba(168,85,247,0.8)' : 'rgba(139,92,246,0.45)'
+            m > 250000 ? 'rgba(225,29,72,0.90)' :
+            m > 170000 ? 'rgba(251,113,133,0.85)' : 'rgba(251,146,60,0.85)'
           ),
           borderColor: DATA.eda.neighborhoods.medians.map(m =>
-            m > 250000 ? '#ec4899' : m > 170000 ? '#a855f7' : '#8b5cf6'
+            m > 250000 ? '#f43f5e' : m > 170000 ? '#fb7185' : '#fb923c'
           ),
           borderWidth: 1.5,
           borderRadius: 6,
@@ -2392,16 +2394,16 @@ function initPrepCharts() {
           {
             label: 'Raw Input',
             data: [81, 19],
-            backgroundColor: 'rgba(244,63,94,0.75)',
-            borderColor: '#f43f5e',
+            backgroundColor: 'rgba(225,29,72,0.75)',
+            borderColor: '#e11d48',
             borderWidth: 1.5,
             borderRadius: 6,
           },
           {
             label: 'Post-Preprocessing',
             data: [297, 0],
-            backgroundColor: 'rgba(236,72,153,0.85)',
-            borderColor: '#ec4899',
+            backgroundColor: 'rgba(16,185,129,0.85)',
+            borderColor: '#10b981',
             borderWidth: 1.5,
             borderRadius: 6,
           }
@@ -2411,7 +2413,7 @@ function initPrepCharts() {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: true, labels: { color: '#8892a4', font: { size: 11 } } },
+          legend: { display: true, labels: { color: '#a89299', font: { size: 11 } } },
           tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.raw}` } }
         },
         scales: {
@@ -2422,7 +2424,7 @@ function initPrepCharts() {
     });
   }
 
-  // 2. Feature Breakdown Doughnut
+  // 2. Feature Breakdown Doughnut (Matching Nexora Flow Health donut)
   const ctxBreak = document.getElementById('prepBreakdownChart');
   if (ctxBreak) {
     new Chart(ctxBreak, {
@@ -2432,12 +2434,12 @@ function initPrepCharts() {
         datasets: [{
           data: DATA.prep.breakdown.counts,
           backgroundColor: [
-            'rgba(236,72,153,0.9)',
-            'rgba(192,38,211,0.85)',
-            'rgba(139,92,246,0.85)',
-            'rgba(99,102,241,0.7)'
+            'rgba(225,29,72,0.90)',
+            'rgba(251,113,133,0.85)',
+            'rgba(245,158,11,0.85)',
+            'rgba(16,185,129,0.85)'
           ],
-          borderColor: ['#ec4899', '#c026d3', '#8b5cf6', '#6366f1'],
+          borderColor: ['#e11d48', '#fb7185', '#f59e0b', '#10b981'],
           borderWidth: 2,
         }]
       },
@@ -2448,7 +2450,7 @@ function initPrepCharts() {
           legend: {
             display: true,
             position: 'right',
-            labels: { color: '#8892a4', font: { size: 11 }, padding: 14 }
+            labels: { color: '#a89299', font: { size: 11 }, padding: 14 }
           },
           tooltip: {
             callbacks: {
@@ -2527,7 +2529,7 @@ function initMetricsCharts() {
       plugins: {
         legend: {
           display: true,
-          labels: { color: '#8892a4', font: { size: 11 }, boxWidth: 12, padding: 16 }
+          labels: { color: '#a89299', font: { size: 11 }, boxWidth: 12, padding: 16 }
         },
         tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${Number(c.raw).toFixed(3)}` } }
       },
@@ -2556,9 +2558,9 @@ function initFeatureChart() {
       datasets: [{
         data: pct,
         backgroundColor: DATA.features.names.map((_, i) =>
-          `rgba(236,72,153,${0.95 - i * 0.08})`
+          `rgba(225,29,72,${0.95 - i * 0.07})`
         ),
-        borderColor: '#ec4899',
+        borderColor: '#f43f5e',
         borderWidth: 1,
         borderRadius: 6,
         borderSkipped: false,
@@ -2592,7 +2594,7 @@ function initFeatureChart() {
           <span class="feature-score">${pctVal}%</span>
         </div>
         <div class="progress-bar">
-          <div class="progress-fill" style="width:${fillPct}%; background: linear-gradient(90deg, #c026d3 0%, #ec4899 100%); box-shadow: 0 0 10px rgba(236,72,153,0.5);"></div>
+          <div class="progress-fill" style="width:${fillPct}%; background:linear-gradient(90deg, #be123c, #f43f5e)"></div>
         </div>
       </div>`;
   });
@@ -2601,8 +2603,8 @@ function initFeatureChart() {
 /* ───────── CV CHARTS ───────── */
 function initCVCharts() {
   const foldLabels = ['Fold 1','Fold 2','Fold 3','Fold 4','Fold 5'];
-  const colors = DATA.foldRmse.map(v => v > 35000 ? 'rgba(244,63,94,0.85)' : 'rgba(139,92,246,0.8)');
-  const borders = DATA.foldRmse.map(v => v > 35000 ? '#f43f5e' : '#8b5cf6');
+  const colors = DATA.foldRmse.map(v => v > 35000 ? 'rgba(251,146,60,0.85)' : 'rgba(225,29,72,0.85)');
+  const borders = DATA.foldRmse.map(v => v > 35000 ? '#fb923c' : '#f43f5e');
 
   const ctxR = document.getElementById('foldRmseChart');
   if (ctxR) new Chart(ctxR, {
@@ -2629,8 +2631,8 @@ function initCVCharts() {
     }
   });
 
-  const r2Colors = DATA.foldR2.map(v => v < 0.75 ? 'rgba(244,63,94,0.85)' : 'rgba(236,72,153,0.85)');
-  const r2Borders = DATA.foldR2.map(v => v < 0.75 ? '#f43f5e' : '#ec4899');
+  const r2Colors = DATA.foldR2.map(v => v < 0.75 ? 'rgba(251,146,60,0.85)' : 'rgba(16,185,129,0.85)');
+  const r2Borders = DATA.foldR2.map(v => v < 0.75 ? '#fb923c' : '#10b981');
 
   const ctxR2 = document.getElementById('foldR2Chart');
   if (ctxR2) new Chart(ctxR2, {
@@ -2684,6 +2686,10 @@ function switchTab(name) {
     btn.classList.add('active');
   }
 
+  if (name === 'predict') {
+    checkBackendHealth();
+  }
+
   if (!initialized[name]) {
     initialized[name] = true;
     setTimeout(() => {
@@ -2706,7 +2712,11 @@ function selectModel(modelKey) {
     if (modelKey === 'rf') activeBtn.classList.add('rf');
     if (modelKey === 'baseline') activeBtn.classList.add('baseline');
   }
-  calculateValuation();
+  if (backendOnline && lastPredictions.xgb) {
+    renderActivePrediction(lastPredictions.xgb, lastPredictions.rf, lastPredictions.baseline, true);
+  } else {
+    calculateValuation();
+  }
 }
 
 function loadPreset(preset) {
@@ -2742,7 +2752,7 @@ function loadPreset(preset) {
     document.getElementById('input-baths').value = 3.5;
   }
   updateFormLabels();
-  calculateValuation();
+  requestValuation();
 }
 
 function updateFormLabels() {
@@ -2764,6 +2774,132 @@ function updateFormLabels() {
   document.getElementById('val-indoor').innerText = `${(liv + bsmt).toLocaleString()} sq ft`;
   document.getElementById('val-year').innerText = year;
   document.getElementById('val-baths').innerText = `${baths} Baths`;
+}
+
+/* ───────── LIVE ESTIMATOR & BACKEND CONNECTOR ───────── */
+let backendOnline = false;
+let backendTimer = null;
+let lastPredictions = {
+  xgb: 234800,
+  rf: 228400,
+  baseline: 180921
+};
+
+async function checkBackendHealth() {
+  try {
+    const res = await fetch('http://127.0.0.1:8000/api/health', {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.status === 'healthy') {
+        backendOnline = true;
+        updateBackendStatusUI(true);
+        fetchBackendPrediction();
+        return;
+      }
+    }
+  } catch (e) {
+    // Backend is offline or not started yet
+  }
+  backendOnline = false;
+  updateBackendStatusUI(false);
+}
+
+function updateBackendStatusUI(online) {
+  const pill = document.getElementById('backend-status-pill');
+  const dot = document.getElementById('backend-status-dot');
+  const text = document.getElementById('backend-status-text');
+
+  const headPill = document.getElementById('header-backend-pill');
+  const headDot = document.getElementById('header-backend-dot');
+  const headText = document.getElementById('header-backend-text');
+
+  if (online) {
+    if (pill) {
+      pill.style.background = 'rgba(16, 185, 129, 0.15)';
+      pill.style.color = '#10b981';
+      pill.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+      if (dot) { dot.style.background = '#10b981'; dot.style.boxShadow = '0 0 10px #10b981'; }
+      if (text) text.innerHTML = '🟢 Live Python .joblib API Connected (Port 8000)';
+    }
+    if (headPill) {
+      headPill.style.background = 'rgba(16, 185, 129, 0.15)';
+      headPill.style.color = '#10b981';
+      headPill.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+      if (headDot) { headDot.style.background = '#10b981'; headDot.style.boxShadow = '0 0 10px #10b981'; }
+      if (headText) headText.innerHTML = '🟢 API: Live .joblib Connected';
+    }
+  } else {
+    if (pill) {
+      pill.style.background = 'rgba(251, 146, 60, 0.12)';
+      pill.style.color = '#fb923c';
+      pill.style.borderColor = 'rgba(251, 146, 60, 0.30)';
+      if (dot) { dot.style.background = '#fb923c'; dot.style.boxShadow = 'none'; }
+      if (text) text.innerHTML = '⚡ Client Simulator · (Run python app.py for Live .joblib API)';
+    }
+    if (headPill) {
+      headPill.style.background = 'rgba(251, 146, 60, 0.12)';
+      headPill.style.color = '#fb923c';
+      headPill.style.borderColor = 'rgba(251, 146, 60, 0.30)';
+      if (headDot) { headDot.style.background = '#fb923c'; headDot.style.boxShadow = 'none'; }
+      if (headText) headText.innerHTML = 'API: Offline (Client Simulator)';
+    }
+  }
+}
+
+function requestValuation() {
+  updateFormLabels();
+  // 1. Instant local calculation for zero-latency response
+  calculateValuation();
+
+  // 2. Debounced query to actual Python .joblib model backend
+  if (backendTimer) clearTimeout(backendTimer);
+  backendTimer = setTimeout(() => {
+    fetchBackendPrediction();
+  }, 90);
+}
+
+async function fetchBackendPrediction() {
+  const payload = {
+    overall_qual: parseInt(document.getElementById('input-qual').value) || 6,
+    gr_liv_area: parseFloat(document.getElementById('input-livarea').value) || 1500,
+    total_bsmt_sf: parseFloat(document.getElementById('input-bsmtarea').value) || 1000,
+    year_built: parseInt(document.getElementById('input-year').value) || 2000,
+    neighborhood: document.getElementById('input-neigh').value || 'CollgCr',
+    exter_qual: document.getElementById('input-exter').value || 'TA',
+    kitchen_qual: document.getElementById('input-kitchen').value || 'TA',
+    garage_cars: parseInt(document.getElementById('input-cars').value) || 2,
+    baths: parseFloat(document.getElementById('input-baths').value) || 2
+  };
+
+  try {
+    const res = await fetch('http://127.0.0.1:8000/api/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.predictions) {
+        if (!backendOnline) {
+          backendOnline = true;
+          updateBackendStatusUI(true);
+        }
+        lastPredictions.xgb = data.predictions.xgb || lastPredictions.xgb;
+        lastPredictions.rf = data.predictions.rf || lastPredictions.rf;
+        lastPredictions.baseline = data.predictions.baseline || 180921;
+        renderActivePrediction(lastPredictions.xgb, lastPredictions.rf, lastPredictions.baseline, true);
+      }
+    }
+  } catch (err) {
+    if (backendOnline) {
+      backendOnline = false;
+      updateBackendStatusUI(false);
+    }
+  }
 }
 
 function calculateValuation() {
@@ -2811,35 +2947,44 @@ function calculateValuation() {
   const rawPropertySum = baseAmes + qualEffect + spaceEffect + neighEffect + finishesEffect + yearEffect + bathEffect;
   const boundedValuation = Math.max(45000, Math.min(750000, rawPropertySum));
 
-  // 1. Baseline Model: ALWAYS predicts training mean ($180,921)
   const baselinePred = 180921;
-
-  // 2. Random Forest: Ensemble tree averaging pulls predictions slightly toward mean
   const rfPred = Math.round(Math.max(48000, (boundedValuation * 0.94) + (baseAmes * 0.06)));
-
-  // 3. XGBoost: Captures non-linear quality * space interactions and gradient boosts
   const qualitySynergy = (qual >= 8 && totalIndoor > 2800) ? (totalIndoor - 2800) * 18 :
                          (qual <= 4 && totalIndoor < 1800) ? -12000 : 0;
   const xgbPred = Math.round(Math.max(50000, boundedValuation + qualitySynergy));
 
+  lastPredictions.xgb = xgbPred;
+  lastPredictions.rf = rfPred;
+  lastPredictions.baseline = baselinePred;
+
+  renderActivePrediction(xgbPred, rfPred, baselinePred, false);
+
+  document.getElementById('fact-base').innerText = `$${baseAmes.toLocaleString()}`;
+  document.getElementById('fact-qual').innerText = `${qualEffect >= 0 ? '+' : ''}$${qualEffect.toLocaleString()}`;
+  document.getElementById('fact-space').innerText = `${spaceEffect >= 0 ? '+' : ''}$${Math.round(spaceEffect).toLocaleString()}`;
+  document.getElementById('fact-neigh').innerText = `${neighEffect >= 0 ? '+' : ''}$${neighEffect.toLocaleString()}`;
+  document.getElementById('fact-finishes').innerText = `${(finishesEffect + yearEffect + bathEffect) >= 0 ? '+' : ''}$${Math.round(finishesEffect + yearEffect + bathEffect).toLocaleString()}`;
+}
+
+function renderActivePrediction(xgbPred, rfPred, baselinePred, isLiveBackend) {
   let activePrice = xgbPred;
   let activeMAE = 14831;
   let activeR2 = 0.860;
   let activeModelName = '⚡ XGBoost Regressor';
-  let activePillClass = 'pill-pink';
+  let activePillClass = 'pill-green';
 
   if (selectedModel === 'rf') {
     activePrice = rfPred;
     activeMAE = 17506;
     activeR2 = 0.837;
     activeModelName = '🌲 Random Forest';
-    activePillClass = 'pill-purple';
+    activePillClass = 'pill-blue';
   } else if (selectedModel === 'baseline') {
     activePrice = baselinePred;
     activeMAE = 55656;
     activeR2 = -0.052;
     activeModelName = '📏 Baseline Model';
-    activePillClass = 'pill-red';
+    activePillClass = 'pill-orange';
   }
 
   document.getElementById('hero-model-badge').innerText = activeModelName;
@@ -2861,18 +3006,18 @@ function calculateValuation() {
     }
   });
 
-  document.getElementById('fact-base').innerText = `$${baseAmes.toLocaleString()}`;
-  document.getElementById('fact-qual').innerText = `${qualEffect >= 0 ? '+' : ''}$${qualEffect.toLocaleString()}`;
-  document.getElementById('fact-space').innerText = `${spaceEffect >= 0 ? '+' : ''}$${Math.round(spaceEffect).toLocaleString()}`;
-  document.getElementById('fact-neigh').innerText = `${neighEffect >= 0 ? '+' : ''}$${neighEffect.toLocaleString()}`;
-  document.getElementById('fact-finishes').innerText = `${(finishesEffect + yearEffect + bathEffect) >= 0 ? '+' : ''}$${Math.round(finishesEffect + yearEffect + bathEffect).toLocaleString()}`;
+  const qual = parseInt(document.getElementById('input-qual').value) || 6;
+  const liv = parseInt(document.getElementById('input-livarea').value) || 1500;
+  const bsmt = parseInt(document.getElementById('input-bsmtarea').value) || 1000;
+  const totalIndoor = liv + bsmt;
 
   const explEl = document.getElementById('model-insight-text');
   if (explEl) {
+    const engineTag = isLiveBackend ? '<span style="color:#10b981; font-weight:700;">[Live .joblib Output]</span> ' : '';
     if (selectedModel === 'xgb') {
-      explEl.innerHTML = `<strong>XGBoost Insight:</strong> Evaluates gradient boosted shallow trees (depth 3, lr 0.05). It accurately pairs the high Overall Quality (${qual}/10) with the Total Indoor Area (${totalIndoor.toLocaleString()} sqft), resulting in an optimal <strong>$${xgbPred.toLocaleString()}</strong> estimate with the narrowest confidence band (±$14,831).`;
+      explEl.innerHTML = `${engineTag}<strong>XGBoost Insight:</strong> Evaluates gradient boosted shallow trees (depth 3, lr 0.05). It accurately pairs the high Overall Quality (${qual}/10) with Total Indoor Area (${totalIndoor.toLocaleString()} sqft), outputting <strong>$${xgbPred.toLocaleString()}</strong> with our lowest group error margin (±$14,831).`;
     } else if (selectedModel === 'rf') {
-      explEl.innerHTML = `<strong>Random Forest Insight:</strong> Averages across 200 deep decision trees (depth 20). Produces a resilient prediction of <strong>$${rfPred.toLocaleString()}</strong>, though tree variance introduces a slightly broader error margin (±$17,506).`;
+      explEl.innerHTML = `${engineTag}<strong>Random Forest Insight:</strong> Averages across 200 deep decision trees (depth 20). Produces a resilient prediction of <strong>$${rfPred.toLocaleString()}</strong>, though tree variance introduces a slightly broader error margin (±$17,506).`;
     } else {
       explEl.innerHTML = `<strong>Baseline Model Insight:</strong> Ignores all structural attributes, location, and square footage entirely. It simply outputs the global Ames training mean <strong>$180,921</strong> (±$55,656 MAE, R² = −0.052), illustrating why machine learning models are indispensable.`;
     }
@@ -2884,18 +3029,13 @@ function initPredictor() {
   inputs.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
-      el.addEventListener('input', () => {
-        updateFormLabels();
-        calculateValuation();
-      });
-      el.addEventListener('change', () => {
-        updateFormLabels();
-        calculateValuation();
-      });
+      el.addEventListener('input', requestValuation);
+      el.addEventListener('change', requestValuation);
     }
   });
   updateFormLabels();
   calculateValuation();
+  checkBackendHealth();
 }
 
 /* ───────── INITIALIZATION ───────── */
@@ -2903,6 +3043,7 @@ window.addEventListener('DOMContentLoaded', () => {
   initialized['overview'] = true;
   initOverviewChart();
   initPredictor();
+  setInterval(checkBackendHealth, 4000);
 });
 </script>
 </body>

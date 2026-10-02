@@ -1,14 +1,29 @@
 __pycache__/
-*.pyc
-.ipynb_checkpoints/
+*.py[cod]
+*$py.class
+*.log
+*.tmp
+
+# Virtual Environment & Secrets
 .venv/
+env/
+venv/
 .env
 *.token
 .DS_Store
-# generated data is ignored except the required Member 3 handover
+Thumbs.db
+
+# IDEs & Editors
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data tracking (preserve member_03 handover and raw data)
 data/processed/*
 !data/processed/.gitkeep
 !data/processed/member_03/
 !data/processed/member_03/**
 
 Temp/
+

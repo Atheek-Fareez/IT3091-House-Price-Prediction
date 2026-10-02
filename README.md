@@ -12,6 +12,8 @@ IT3091 Machine Learning Group Project - Ames Housing Price Prediction
 **Primary Lens:** Price Prediction  
 **Secondary Lens:** Valuation Feature Analysis  
 
+> 🚀 **Live Production Dashboard & API**: See [HOW_TO_RUN.md](HOW_TO_RUN.md) for 1-click startup instructions for both the frontend dashboard and live Python `.joblib` model API.
+
 ---
 
 ## 1. Project Overview
