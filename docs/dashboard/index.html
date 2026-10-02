@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IT3091 — House Price Prediction | Full Pipeline & Model Comparison Dashboard</title>
+  <meta name="description" content="Comprehensive end-to-end Machine Learning Dashboard for IT3091 Group 2026-AI-08K Ames Housing Price Prediction: EDA, Preprocessing Pipeline, Feature Engineering, and Model Comparison." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg-primary:    #0a0e1a;
+      --bg-card:       rgba(255,255,255,0.04);
+      --bg-card-hover: rgba(255,255,255,0.07);
+      --border:        rgba(255,255,255,0.08);
+      --border-bright: rgba(255,255,255,0.15);
+      --text-primary:  #f0f4ff;
+      --text-secondary:#8892a4;
+      --text-muted:    #4a5568;
+      --accent-blue:   #4f9cf9;
+      --accent-purple: #a78bfa;
+      --accent-green:  #34d399;
+      --accent-orange: #fb923c;
+      --accent-red:    #f87171;
+      --accent-cyan:   #38bdf8;
+      --gold:          #fbbf24;
+      --baseline-col:  #f87171;
+      --rf-col:        #60a5fa;
+      --xgb-col:       #34d399;
+      --glow-green:    0 0 30px rgba(52,211,153,0.22);
+      --glow-blue:     0 0 30px rgba(79,156,249,0.2);
+      --glow-purple:   0 0 30px rgba(167,139,250,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND GRADIENT ORBS ── */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px; left: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(79,156,249,0.08) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -200px; right: -200px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(167,139,250,0.07) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative; z-index: 10;
+      background: rgba(10,14,26,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .header-left .badge {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent-blue);
+      background: rgba(79,156,249,0.12);
+      border: 1px solid rgba(79,156,249,0.25);
+      border-radius: 20px;
+      padding: 4px 12px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    .header-left h1 {
+      font-size: 22px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #f0f4ff, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header-left p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .team-pill {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 12px;
+      white-space: nowrap;
+      transition: border-color 0.2s;
+    }
+    .team-pill:hover { border-color: var(--border-bright); }
+    .team-pill span { color: var(--text-primary); font-weight: 600; }
+
+    /* ── NAV TABS ── */
+    .tab-bar {
+      position: relative; z-index: 10;
+      background: rgba(10,14,26,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 14px 18px;
+      cursor: pointer;
+      position: relative;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .tab-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent-blue);
+      transform: scaleX(0);
+      transition: transform 0.2s;
+      border-radius: 2px 2px 0 0;
+    }
+    .tab-btn:hover { color: var(--text-primary); }
+    .tab-btn.active { color: var(--accent-blue); }
+    .tab-btn.active::after { transform: scaleX(1); }
+
+    /* ── MAIN CONTENT ── */
+    main {
+      position: relative; z-index: 5;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 36px 40px;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── SECTION TITLES ── */
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .section-heading {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .section-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-bright);
+    }
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* ── GRID LAYOUTS ── */
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+    .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
+
+    /* ── MODEL HERO CARDS ── */
+    .model-card {
+      border-radius: 20px;
+      padding: 26px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+    .model-card:hover { transform: translateY(-4px); }
+    .model-card.baseline {
+      background: linear-gradient(135deg, rgba(248,113,113,0.12), rgba(248,113,113,0.04));
+      border: 1px solid rgba(248,113,113,0.2);
+    }
+    .model-card.rf {
+      background: linear-gradient(135deg, rgba(96,165,250,0.12), rgba(96,165,250,0.04));
+      border: 1px solid rgba(96,165,250,0.2);
+    }
+    .model-card.xgb {
+      background: linear-gradient(135deg, rgba(52,211,153,0.14), rgba(52,211,153,0.04));
+      border: 1px solid rgba(52,211,153,0.3);
+      box-shadow: var(--glow-green);
+    }
+
+    .model-card .winner-badge {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #000;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .model-card .model-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+    .model-card.baseline .model-icon { background: rgba(248,113,113,0.15); }
+    .model-card.rf .model-icon       { background: rgba(96,165,250,0.15); }
+    .model-card.xgb .model-icon      { background: rgba(52,211,153,0.15); }
+
+    .model-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .model-card .model-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 18px;
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .metric-row:last-child { border-bottom: none; }
+    .metric-label { font-size: 12px; color: var(--text-secondary); }
+    .metric-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .metric-value.good { color: var(--accent-green); }
+    .metric-value.ok   { color: var(--accent-blue); }
+    .metric-value.bad  { color: var(--accent-red); }
+
+    /* ── STAT PILLS ── */
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+    .stat-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      text-align: center;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .stat-pill:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-bright);
+    }
+    .stat-pill .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .stat-pill .stat-val { font-size: 22px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+    .stat-pill .stat-model { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── CHART CONTAINERS ── */
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+    }
+    .chart-wrap canvas { width: 100% !important; }
+
+    /* ── PIPELINE FLOW / STEPPER ── */
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .pipeline-step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 14px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .pipeline-step-card:hover {
+      transform: translateY(-3px);
+      background: var(--bg-card-hover);
+      border-color: var(--accent-blue);
+    }
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: rgba(79,156,249,0.15);
+      color: var(--accent-blue);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .step-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .step-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .step-tag {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      align-self: flex-start;
+    }
+
+    /* ── BADGES & PILLS ── */
+    .pill {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .pill-blue   { background: rgba(79,156,249,0.15); color: var(--accent-blue); border: 1px solid rgba(79,156,249,0.25); }
+    .pill-green  { background: rgba(52,211,153,0.15); color: var(--accent-green); border: 1px solid rgba(52,211,153,0.25); }
+    .pill-orange { background: rgba(251,146,60,0.15); color: var(--accent-orange); border: 1px solid rgba(251,146,60,0.25); }
+    .pill-purple { background: rgba(167,139,250,0.15); color: var(--accent-purple); border: 1px solid rgba(167,139,250,0.25); }
+    .pill-red    { background: rgba(248,113,113,0.15); color: var(--accent-red); border: 1px solid rgba(248,113,113,0.25); }
+    .pill-gold   { background: rgba(251,191,36,0.15); color: var(--gold); border: 1px solid rgba(251,191,36,0.25); }
+
+    /* ── INSIGHT / BANNER BOXES ── */
+    .callout-box {
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-top: 18px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      line-height: 1.6;
+    }
+    .callout-box.info {
+      background: linear-gradient(135deg, rgba(79,156,249,0.08), rgba(167,139,250,0.05));
+      border: 1px solid rgba(79,156,249,0.2);
+    }
+    .callout-box.warn {
+      background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(251,146,60,0.05));
+      border: 1px solid rgba(251,191,36,0.25);
+    }
+    .callout-box.success {
+      background: linear-gradient(135deg, rgba(52,211,153,0.08), rgba(56,189,248,0.05));
+      border: 1px solid rgba(52,211,153,0.25);
+    }
+    .callout-icon { font-size: 24px; line-height: 1; }
+    .callout-content h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--text-primary); }
+    .callout-content p { font-size: 13px; color: var(--text-secondary); }
+
+    /* ── PROGRESS BARS (feature importance) ── */
+    .feature-list { display: flex; flex-direction: column; gap: 10px; }
+    .feature-item {}
+    .feature-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+    .feature-name { font-weight: 500; }
+    .feature-score {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .progress-bar {
+      height: 6px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ── VERDICT CARD ── */
+    .verdict-card {
+      background: linear-gradient(135deg, rgba(52,211,153,0.1), rgba(79,156,249,0.08));
+      border: 1px solid rgba(52,211,153,0.25);
+      border-radius: 20px;
+      padding: 32px;
+      margin-top: 8px;
+    }
+    .verdict-card h2 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .verdict-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ── COMPARISON TABLE ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead tr {
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border-bright);
+    }
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .best-cell { color: var(--accent-green); font-weight: 600; }
+    .worst-cell { color: var(--accent-red); }
+    .td-label { font-family: 'Inter', sans-serif; font-weight: 500; color: var(--text-primary); }
+
+    /* ── FOLD TABLE ── */
+    .fold-badge {
+      display: inline-block;
+      background: rgba(79,156,249,0.15);
+      color: var(--accent-blue);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 5;
+      text-align: center;
+      padding: 36px 40px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+    footer span { color: var(--text-secondary); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1100px) {
+      .pipeline-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 900px) {
+      main { padding: 24px 20px; }
+      .grid-4, .grid-3, .grid-2, .grid-2-1, .grid-1-2 { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      header { padding: 16px 20px; }
+      .tab-bar { padding: 0 20px; }
+    }
+    @media (max-width: 600px) {
+      .pipeline-grid { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .tab-panel.active { animation: fadeUp 0.35s ease; }
+
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+    .dot-baseline { background: var(--baseline-col); }
+    .dot-rf       { background: var(--rf-col); }
+    .dot-xgb      { background: var(--xgb-col); }
+
+    .legend {
+      display: flex; gap: 20px;
+      font-size: 12px; color: var(--text-secondary);
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .legend-item { display: flex; align-items: center; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════ HEADER ══════════════════════ -->
+<header>
+  <div class="header-left">
+    <div class="badge">IT3091 · Machine Learning · Group 2026-AI-08K</div>
+    <h1>🏠 House Price Prediction — Full ML Pipeline Dashboard</h1>
+    <p>Ames Housing Dataset · Exploratory Analysis · Preprocessing · 3 Models Evaluated</p>
+  </div>
+  <div class="header-right">
+    <div class="team-pill">M1 <span>Atheek Fareez</span> · XGBoost</div>
+    <div class="team-pill">M2 <span>Wijesiri</span> · EDA & Data Quality</div>
+    <div class="team-pill">M3 <span>Wazni Ahamed</span> · Preprocessing & RF</div>
+    <div class="team-pill">M4 <span>Raashidh</span> · Upcoming Model</div>
+  </div>
+</header>
+
+<!-- ══════════════════════ TABS ══════════════════════ -->
+<div class="tab-bar">
+  <button class="tab-btn active" id="tab-overview" onclick="switchTab('overview')">📊 Overview</button>
+  <button class="tab-btn"        id="tab-eda"      onclick="switchTab('eda')">🔬 EDA & Insights</button>
+  <button class="tab-btn"        id="tab-prep"     onclick="switchTab('prep')">⚙️ Preprocessing & Pipeline</button>
+  <button class="tab-btn"        id="tab-metrics"  onclick="switchTab('metrics')">📈 Metrics Comparison</button>
+  <button class="tab-btn"        id="tab-features" onclick="switchTab('features')">🔍 Feature Importance</button>
+  <button class="tab-btn"        id="tab-cv"       onclick="switchTab('cv')">🔄 Cross-Validation</button>
+  <button class="tab-btn"        id="tab-details"  onclick="switchTab('details')">📋 Model Specs</button>
+  <button class="tab-btn"        id="tab-verdict"  onclick="switchTab('verdict')">🏆 Final Verdict</button>
+</div>
+
+<!-- ══════════════════════ MAIN ══════════════════════ -->
+<main>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━ TAB 1: OVERVIEW ━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="tab-panel active" id="panel-overview">
+
+    <div class="section-title">Project Overview & Executive Summary</div>
+    <div class="section-heading">End-to-End Machine Learning Workflow</div>
+    <div class="section-sub">
+      A complete, group-engineered solution for residential property valuation in Ames, Iowa.
+      Covering exploratory data analysis, leak-free preprocessing, feature engineering, and rigorous multi-model benchmarking.
+    </div>
+
+    <!-- 4 Pipeline Lifecycle Cards -->
+    <div class="grid-4" style="margin-bottom:28px">
+      <div class="card" style="border-left: 3px solid var(--accent-purple)">
+        <div style="font-size:11px; font-weight:700; color:var(--accent-purple); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px">Phase 1 · EDA</div>
+        <div style="font-size:15px; font-weight:700; margin-bottom:4px">Data Understanding</div>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.5">Wijesiri (IT24100602) explored 1,460 homes, identified right-skewed prices, and discovered structural amenity patterns.</p>
+        <div style="margin-top:10px"><span class="pill pill-purple">81 Raw Features Analyzed</span></div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--accent-blue)">
+        <div style="font-size:11px; font-weight:700; color:var(--accent-blue); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px">Phase 2 · Pipeline</div>
+        <div style="font-size:15px; font-weight:700; margin-bottom:4px">Preprocessing & FE</div>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.5">Wazni (IT24103352) built fold-wise imputation, dual branch encoding, and engineered key aggregates like TotalIndoorAreaSF.</p>
+        <div style="margin-top:10px"><span class="pill pill-blue">297 Transformed Predictors</span></div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--accent-green)">
+        <div style="font-size:11px; font-weight:700; color:var(--accent-green); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px">Phase 3 · Modeling</div>
+        <div style="font-size:15px; font-weight:700; margin-bottom:4px">XGBoost & Ensembles</div>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.5">Atheek (IT24103933) tuned XGBoost with 300 estimators and 5-fold CV, achieving top R² (0.860) with lowest overfit gap.</p>
+        <div style="margin-top:10px"><span class="pill pill-green">Best RMSE: $29,675</span></div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--gold)">
+        <div style="font-size:11px; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px">Phase 4 · Synthesis</div>
+        <div style="font-size:15px; font-weight:700; margin-bottom:4px">Evaluation & Handover</div>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.5">Cross-model comparison across 3 candidates with Raashidh integrating the final benchmark model to complete group scope.</p>
+        <div style="margin-top:10px"><span class="pill pill-gold">Production Ready</span></div>
+      </div>
+    </div>
+
+    <!-- Best metric pills -->
+    <div class="stat-grid">
+      <div class="stat-pill">
+        <div class="stat-label">Best RMSE (Val)</div>
+        <div class="stat-val" style="color:var(--accent-green)">$29,675</div>
+        <div class="stat-model">XGBoost (Atheek)</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-label">Best MAE (Val)</div>
+        <div class="stat-val" style="color:var(--accent-green)">$14,831</div>
+        <div class="stat-model">XGBoost (Atheek)</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-label">Best R² Score</div>
+        <div class="stat-val" style="color:var(--accent-green)">0.860</div>
+        <div class="stat-model">XGBoost (Atheek)</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-label">Lowest Overfit Gap</div>
+        <div class="stat-val" style="color:var(--accent-blue)">0.072</div>
+        <div class="stat-model">Train: 0.968 vs Val: 0.860</div>
+      </div>
+    </div>
+
+    <!-- Three model hero cards -->
+    <div class="grid-3">
+      <!-- Baseline -->
+      <div class="model-card baseline">
+        <div class="model-icon">📏</div>
+        <h3>Baseline Model</h3>
+        <div class="model-sub">Mean Predictor · Dummy Regressor Benchmark</div>
+        <div class="metric-row">
+          <span class="metric-label">RMSE</span>
+          <span class="metric-value bad">$81,448</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">MAE</span>
+          <span class="metric-value bad">$55,656</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">R² Score</span>
+          <span class="metric-value bad">−0.052</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Status</span>
+          <span class="metric-value" style="color:var(--text-secondary); font-size:12px">Benchmark Floor</span>
+        </div>
+      </div>
+
+      <!-- Random Forest -->
+      <div class="model-card rf">
+        <div class="model-icon">🌲</div>
+        <h3>Random Forest</h3>
+        <div class="model-sub">Wazni Ahamed · 200 trees · max_depth 20</div>
+        <div class="metric-row">
+          <span class="metric-label">CV RMSE</span>
+          <span class="metric-value ok">$30,815</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">CV MAE</span>
+          <span class="metric-value ok">$17,506</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">CV R²</span>
+          <span class="metric-value ok">0.837</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Overfit Gap</span>
+          <span class="metric-value" style="color:var(--accent-orange)">0.143 (Train R²: 0.980)</span>
+        </div>
+      </div>
+
+      <!-- XGBoost (WINNER) -->
+      <div class="model-card xgb">
+        <div class="winner-badge">🏆 Winner</div>
+        <div class="model-icon">⚡</div>
+        <h3>XGBoost Regressor</h3>
+        <div class="model-sub">Atheek Fareez · max_depth 3 · 300 estimators</div>
+        <div class="metric-row">
+          <span class="metric-label">Val RMSE</span>
+          <span class="metric-value good">$29,675</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Val MAE</span>
+          <span class="metric-value good">$14,831</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Val R²</span>
+          <span class="metric-value good">0.860</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Overfit Gap</span>
+          <span class="metric-value good">0.072 (Generalizes Best)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick RMSE chart -->
+    <div style="margin-top:28px;">
+      <div class="card">
+        <div class="card-title">Validation Error Benchmark — Lower is Better (USD)</div>
+        <div class="legend">
+          <span class="legend-item"><span class="dot dot-baseline"></span>Baseline ($81,448)</span>
+          <span class="legend-item"><span class="dot dot-rf"></span>Random Forest ($30,815)</span>
+          <span class="legend-item"><span class="dot dot-xgb"></span>XGBoost ($29,675)</span>
+        </div>
+        <div class="chart-wrap" style="height:240px">
+          <canvas id="overviewChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /panel-overview -->
+
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━ TAB 2: EDA & DATA UNDERSTANDING ━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="tab-panel" id="panel-eda">
+
+    <div class="section-title">Phase 1 · Data Understanding, EDA & Data Quality</div>
+    <div class="section-heading">Exploratory Profiling & Market Insights</div>
+    <div class="section-sub">
+      Executed by <strong>Wijesiri S.P.R.H (IT24100602)</strong> · Full statistical analysis of the Ames Housing dataset.
+      Uncovering target variable asymmetry, fundamental valuation drivers, semantic structural missingness, and spatial variance.
+    </div>
+
+    <!-- EDA Key Health Stats -->
+    <div class="stat-grid">
+      <div class="stat-pill">
+        <div class="stat-label">Total Observations</div>
+        <div class="stat-val" style="color:var(--accent-blue)">1,460</div>
+        <div class="stat-model">0 Duplicate Rows (100% Unique)</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-label">Raw Features</div>
+        <div class="stat-val" style="color:var(--accent-purple)">81</div>
+        <div class="stat-model">38 Numerical · 43 Categorical</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-label">Target Mean / Median</div>
+        <div class="stat-val" style="color:var(--accent-green)">$180k / $163k</div>
+        <div class="stat-model">Skewness: 1.88 (Right-skewed)</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-label">Missingness Scope</div>
+        <div class="stat-val" style="color:var(--accent-orange)">19 Columns</div>
+        <div class="stat-model">Structural Absence vs Unknown</div>
+      </div>
+    </div>
+
+    <!-- EDA Visual Grid 1: Distribution & Correlations -->
+    <div class="grid-2" style="margin-bottom:24px">
+      <div class="card">
+        <div class="card-title">SalePrice Distribution — Right-Skewed Histogram</div>
+        <div style="font-size:12px; color:var(--text-secondary); margin-bottom:12px">
+          Mean ($180,921) > Median ($163,000) with a long tail stretching to $755,000. Justifies logarithmic target transformation <code style="color:var(--accent-green)">log1p(SalePrice)</code>.
+        </div>
+        <div class="chart-wrap" style="height:290px">
+          <canvas id="salePriceDistChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Top 10 Numerical Correlations with SalePrice (Pearson r)</div>
+        <div style="font-size:12px; color:var(--text-secondary); margin-bottom:12px">
+          Material quality, usable living area, and car garage capacity represent the primary physical drivers of property price in Ames.
+        </div>
+        <div class="chart-wrap" style="height:290px">
+          <canvas id="corrChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDA Visual Grid 2: Missing Values & Quality Rating Scale -->
+    <div class="grid-2" style="margin-bottom:24px">
+      <div class="card">
+        <div class="card-title">Missing Value Analysis & Structural Absence Detection</div>
+        <div style="font-size:12px; color:var(--text-secondary); margin-bottom:12px">
+          Features with high missingness denote <em>absence of an amenity</em> (No Pool, No Garage, No Basement) rather than corrupted records.
+        </div>
+        <div class="chart-wrap" style="height:290px">
+          <canvas id="missingChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Overall Quality Rating (1–10) vs Median Price</div>
+        <div style="font-size:12px; color:var(--text-secondary); margin-bottom:12px">
+          Steep non-linear price appreciation across overall quality tiers. Grade 10 homes achieve more than 8x the median value of Grade 1 homes.
+        </div>
+        <div class="chart-wrap" style="height:290px">
+          <canvas id="qualChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDA Visual Grid 3: Neighborhood Geo Pricing -->
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-title">Ames Neighborhood Price Dispersion — Median SalePrice by Location</div>
+      <div style="font-size:12px; color:var(--text-secondary); margin-bottom:12px">
+        Substantial geographical price stratification across 23 Ames neighborhoods. Northridge Heights ($315,000) vs Meadow Village ($88,000) shows a 3.5x premium.
+      </div>
+      <div class="chart-wrap" style="height:320px">
+        <canvas id="neighborhoodChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Outlier & Low-Variation Detailed Analysis -->
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card" style="border-left: 3px solid var(--accent-orange)">
+        <div class="card-title" style="color:var(--accent-orange)">⚠️ Outlier Investigation: High Leverage Properties</div>
+        <p style="font-size:13px; color:var(--text-secondary); line-height:1.7; margin-bottom:14px">
+          Member 2 flagged two extreme observations with exceptional above-ground living area but surprisingly depressed prices:
+        </p>
+        <table>
+          <thead>
+            <tr><th>Train ID</th><th>GrLivArea (sq ft)</th><th>SalePrice ($)</th><th>Context / Finding</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="fold-badge">ID 1299</span></td>
+              <td class="worst-cell">5,642</td>
+              <td>$160,000</td>
+              <td style="font-family:'Inter', sans-serif; font-size:12px">New construction partial sale. Retained contextually.</td>
+            </tr>
+            <tr>
+              <td><span class="fold-badge">ID 524</span></td>
+              <td class="worst-cell">4,676</td>
+              <td>$184,750</td>
+              <td style="font-family:'Inter', sans-serif; font-size:12px">Abnormal sale condition. Kept without arbitrary deletion.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--accent-blue)">
+        <div class="card-title" style="color:var(--accent-blue)">🔍 Low-Variation & Dominant Features Audit</div>
+        <p style="font-size:13px; color:var(--text-secondary); line-height:1.7; margin-bottom:14px">
+          Certain columns exhibit near-zero variance, where one single value dominates over 98% of all instances:
+        </p>
+        <table>
+          <thead>
+            <tr><th>Feature</th><th>Dominant Class</th><th>Dominance %</th><th>Modeling Impact</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Utilities</td><td>AllPub</td><td>99.93%</td><td style="font-family:'Inter', sans-serif; font-size:12px">Zero discriminatory power</td></tr>
+            <tr><td class="td-label">Street</td><td>Pave</td><td>99.59%</td><td style="font-family:'Inter', sans-serif; font-size:12px">Excluded or low-weight</td></tr>
+            <tr><td class="td-label">Condition2</td><td>Norm</td><td>98.97%</td><td style="font-family:'Inter', sans-serif; font-size:12px">Minimal variance across homes</td></tr>
+            <tr><td class="td-label">RoofMatl</td><td>CompShg</td><td>98.22%</td><td style="font-family:'Inter', sans-serif; font-size:12px">Safe for tree splits / penalty</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Handover summary banner -->
+    <div class="callout-box info">
+      <div class="callout-icon">📋</div>
+      <div class="callout-content">
+        <h4>Member 2 Handover Directives to Preprocessing (Member 3)</h4>
+        <p>
+          1) <strong>Structural Absence:</strong> Do not treat missing garage/basement/pool records as unknown errors; map them cleanly to distinct absence states.
+          2) <strong>Target Skew:</strong> Recommend log-space training to normalize right-skewed errors.
+          3) <strong>Outliers:</strong> Do not blindly drop high-leverage rows 524 and 1299 without justification.
+          4) <strong>Core Drivers:</strong> Prioritize Overall Quality, living area, and basement metrics in feature engineering.
+        </p>
+      </div>
+    </div>
+
+  </div><!-- /panel-eda -->
+
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━ TAB 3: PREPROCESSING & FEATURE ENGINEERING ━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="tab-panel" id="panel-prep">
+
+    <div class="section-title">Phase 2 · Data Preprocessing & Feature Engineering</div>
+    <div class="section-heading">Leakage-Safe Preprocessing Pipeline</div>
+    <div class="section-sub">
+      Executed by <strong>Ahamed M.A.W (IT24103352)</strong> · Transforming 81 raw attributes into 297 high-signal predictors.
+      Built with scikit-learn compatible modules, training-fold parameter isolation, and domain-informed real estate heuristics.
+    </div>
+
+    <!-- Preprocessing Impact Stat Pills -->
+    <div class="stat-grid">
+      <div class="stat-pill">
+        <div class="stat-label">Feature Expansion</div>
+        <div class="stat-val" style="color:var(--accent-blue)">81 → 297</div>
+        <div class="stat-model">3.6x Dimensionality via Encoding</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-label">Missingness Post-Prep</div>
+        <div class="stat-val" style="color:var(--accent-green)">0 NaN</div>
+        <div class="stat-model">100% Complete & Finite Array</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-label">Leakage Prevention</div>
+        <div class="stat-val" style="color:var(--accent-green)">100% Fold-Safe</div>
+        <div class="stat-model">Imputers & Scalers Fit on Train Only</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-label">Engineered Features</div>
+        <div class="stat-val" style="color:var(--accent-purple)">9 + 52 Flags</div>
+        <div class="stat-model">Domain Aggregates & Quality Signals</div>
+      </div>
+    </div>
+
+    <!-- Stepper Flow: Pipeline Architecture -->
+    <div class="card" style="margin-bottom:28px">
+      <div class="card-title">End-to-End Leakage-Safe Pipeline Architecture</div>
+      <div class="pipeline-grid">
+        <div class="pipeline-step-card">
+          <div>
+            <div class="step-badge">1</div>
+            <div class="step-title">Ingestion & Split</div>
+            <div class="step-desc">Load raw train.csv (1460×81) & test.csv (1459×80). Isolate ID and target SalePrice.</div>
+          </div>
+          <span class="step-tag pill-purple">Data Contract</span>
+        </div>
+
+        <div class="pipeline-step-card">
+          <div>
+            <div class="step-badge">2</div>
+            <div class="step-title">Pre-Listing Exclusions</div>
+            <div class="step-desc">Drop post-listing transaction fields (SaleType, SaleCondition, YrSold, MoSold, MiscVal) to stop temporal leakage.</div>
+          </div>
+          <span class="step-tag pill-red">Leakage Guard</span>
+        </div>
+
+        <div class="pipeline-step-card">
+          <div>
+            <div class="step-badge">3</div>
+            <div class="step-title">Semantic Cleaning</div>
+            <div class="step-desc">Separate physical absence (NoGarage, NoBasement) from unknown values via cross-column consistency rules.</div>
+          </div>
+          <span class="step-tag pill-blue">Domain Rules</span>
+        </div>
+
+        <div class="pipeline-step-card">
+          <div>
+            <div class="step-badge">4</div>
+            <div class="step-title">Fold Imputation</div>
+            <div class="step-desc">ApplicableMedianImputer estimates statistics exclusively from training folds; held-out rows never leak.</div>
+          </div>
+          <span class="step-tag pill-green">CV Isolation</span>
+        </div>
+
+        <div class="pipeline-step-card">
+          <div>
+            <div class="step-badge">5</div>
+            <div class="step-title">Feature Engineering</div>
+            <div class="step-desc">Synthesize 9 high-leverage property aggregates + 52 explicit uncertainty and quality conflict indicators.</div>
+          </div>
+          <span class="step-tag pill-purple">+9 Aggregates</span>
+        </div>
+
+        <div class="pipeline-step-card">
+          <div>
+            <div class="step-badge">6</div>
+            <div class="step-title">Dual Encoding</div>
+            <div class="step-desc">OneHotEncoder with handle_unknown='ignore' for nominals + Ordinal ranks + selective continuous scaling.</div>
+          </div>
+          <span class="step-tag pill-green">297 Features</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts: Feature Space Transformation & Composition -->
+    <div class="grid-2" style="margin-bottom:24px">
+      <div class="card">
+        <div class="card-title">Feature Expansion & Missingness Resolution</div>
+        <div style="font-size:12px; color:var(--text-secondary); margin-bottom:12px">
+          Raw 81 attributes expanded to 297 high-signal predictors; all 19 columns with missing values resolved to 0 NaN.
+        </div>
+        <div class="chart-wrap" style="height:280px">
+          <canvas id="prepComparisonChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Transformed Feature Space Composition (297 Total Predictors)</div>
+        <div style="font-size:12px; color:var(--text-secondary); margin-bottom:12px">
+          Breakdown of resulting feature types entering subsequent machine learning regression algorithms.
+        </div>
+        <div class="chart-wrap" style="height:280px">
+          <canvas id="prepBreakdownChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature Engineering Deep Dive Table -->
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-title">Domain Feature Engineering — Real Estate Aggregates & Indicators</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Engineered Feature</th>
+            <th>Mathematical Formula / Logic</th>
+            <th>Domain Motivation</th>
+            <th>Empirical Impact</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-label">TotalIndoorAreaSF</td>
+            <td><code>GrLivArea + TotalBsmtSF</code></td>
+            <td>Measures total enclosed space under roof, incorporating basement footprint.</td>
+            <td class="best-cell">Ranked #3 most important feature in XGBoost! (13.4% gain)</td>
+          </tr>
+          <tr>
+            <td class="td-label">FinishedBasementSF</td>
+            <td><code>BsmtFinSF1 + BsmtFinSF2</code></td>
+            <td>Consolidates multiple finished basement zones into unified livable subterranean area.</td>
+            <td class="ok">Reduces colinearity between basement finish splits</td>
+          </tr>
+          <tr>
+            <td class="td-label">BathroomEquivalent</td>
+            <td><code>FullBath + BsmtFullBath + 0.5 × (HalfBath + BsmtHalfBath)</code></td>
+            <td>Standard real estate valuation capacity heuristic weighting half-baths at 50%.</td>
+            <td class="ok">Linear proxy for plumbing capacity & home accommodation</td>
+          </tr>
+          <tr>
+            <td class="td-label">TotalPorchSF</td>
+            <td><code>OpenPorchSF + EnclosedPorch + 3SsnPorch + ScreenPorch</code></td>
+            <td>Captures outdoor covered amenity utility excluding open wood decks.</td>
+            <td class="ok">Positive correlation with higher leisure quality</td>
+          </tr>
+          <tr>
+            <td class="td-label">Presence Indicators</td>
+            <td><code>HasGarage</code>, <code>HasBasement</code>, <code>HasFireplace</code>, <code>HasPool</code></td>
+            <td>Explicit binary flags ensuring tree models can split cleanly on physical existence.</td>
+            <td class="ok">Eliminates ambiguity between zero-area and missing data</td>
+          </tr>
+          <tr>
+            <td class="td-label">52 Uncertainty Flags</td>
+            <td><code>LotFrontageUnknown</code>, <code>MasonryConflict</code>, <code>InvalidYear</code></td>
+            <td>Preserves audit trails for imputed or conflicting observations.</td>
+            <td class="ok">Allows models to adapt uncertainty penalties</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Semantic Treatment Strategy Matrix -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">Semantic Missingness Strategy Matrix</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Amenity Group</th>
+            <th>Raw Condition</th>
+            <th>Applied Preprocessing Action</th>
+            <th>Justification & Leakage Guard</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-label">Garage Attributes</td>
+            <td>81 rows missing GarageType/Qual</td>
+            <td>Assigned <code>NoGarage</code> category and 0 area/cars</td>
+            <td>GarageCars=0 and GarageArea=0 prove structural absence, not unrecorded data.</td>
+          </tr>
+          <tr>
+            <td class="td-label">Basement Attributes</td>
+            <td>37 rows missing BsmtQual/Cond</td>
+            <td>Assigned <code>NoBasement</code> category and 0 square footage</td>
+            <td>Confirmed zero total basement area; avoids inventing artificial basement sizes.</td>
+          </tr>
+          <tr>
+            <td class="td-label">Lot Frontage</td>
+            <td>259 rows blank</td>
+            <td>Imputed training-fold median + <code>LotFrontageUnknown=1</code></td>
+            <td>No physical absence concept for lot boundary; median fit strictly within fold.</td>
+          </tr>
+          <tr>
+            <td class="td-label">Masonry Veneer</td>
+            <td>864 literal 'None' vs 8 'NA'</td>
+            <td>'None' preserved as category; genuine blanks imputed with fold median</td>
+            <td>Repairs default pandas parser bug that lumped documented absence with missingness.</td>
+          </tr>
+          <tr>
+            <td class="td-label">Alley & Fence</td>
+            <td>1369 Alley / 1179 Fence blank</td>
+            <td>Preserved as documented absence (<code>NoAlley</code>, <code>NoFence</code>)</td>
+            <td>Data dictionary explicitly defines 'NA' as absence of physical boundary/access.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Leakage Prevention & Audit Box -->
+    <div class="callout-box success">
+      <div class="callout-icon">🛡️</div>
+      <div class="callout-content">
+        <h4>100% Strict Leakage Prevention Protocol</h4>
+        <p>
+          Unlike naive implementations that preprocess the entire dataset prior to cross-validation, Member 3 designed a reusable scikit-learn preprocessor factory.
+          All imputation medians, one-hot category vocabularies, and continuous scaling parameters are fitted strictly inside each cross-validation training fold.
+          Held-out validation samples and Kaggle test data are never seen during parameter estimation, guaranteeing zero data leakage and 100% honest generalization metrics.
+        </p>
+      </div>
+    </div>
+
+  </div><!-- /panel-prep -->
+
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━ TAB 4: METRICS ━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="tab-panel" id="panel-metrics">
+
+    <div class="section-title">Phase 3 · Performance Metrics Comparison</div>
+    <div class="section-heading">Multi-Model Benchmark on Held-Out Validation</div>
+    <div class="section-sub">All metrics computed on independent validation data. RMSE and MAE in original USD (lower is better). R² ranges from 0 to 1 (higher is better).</div>
+
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-title">RMSE — Root Mean Squared Error (USD, Lower = Better)</div>
+        <div class="chart-wrap" style="height:280px"><canvas id="rmseChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">MAE — Mean Absolute Error (USD, Lower = Better)</div>
+        <div class="chart-wrap" style="height:280px"><canvas id="maeChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:24px">
+      <div class="card">
+        <div class="card-title">R² Score — Explained Variance (Higher = Better)</div>
+        <div class="chart-wrap" style="height:280px"><canvas id="r2Chart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Train vs Validation R² — Overfitting Generalization Check</div>
+        <div class="chart-wrap" style="height:280px"><canvas id="overfitChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Comprehensive Metrics Scorecard</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Type</th>
+            <th>RMSE ($)</th>
+            <th>MAE ($)</th>
+            <th>Val R²</th>
+            <th>Train R²</th>
+            <th>Overfit Gap</th>
+            <th>Primary Author</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-label">Baseline (Mean)</td>
+            <td>Dummy Regressor</td>
+            <td class="worst-cell">$81,448</td>
+            <td class="worst-cell">$55,656</td>
+            <td class="worst-cell">−0.052</td>
+            <td>0.000</td>
+            <td>0.000</td>
+            <td>Benchmark Floor</td>
+          </tr>
+          <tr>
+            <td class="td-label">Random Forest</td>
+            <td>Ensemble (200 trees)</td>
+            <td class="ok">$30,815</td>
+            <td class="ok">$17,506</td>
+            <td class="ok">0.837</td>
+            <td>0.980</td>
+            <td class="worst-cell">0.143</td>
+            <td>Wazni Ahamed (Member 3)</td>
+          </tr>
+          <tr style="background:rgba(52,211,153,0.06); font-weight:600">
+            <td class="td-label" style="color:var(--accent-green)">⚡ XGBoost</td>
+            <td>Gradient Boosted Trees</td>
+            <td class="best-cell">$29,675 ✓</td>
+            <td class="best-cell">$14,831 ✓</td>
+            <td class="best-cell">0.860 ✓</td>
+            <td>0.968</td>
+            <td class="best-cell">0.072 ✓</td>
+            <td>Atheek Fareez (Member 1)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /panel-metrics -->
+
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━ TAB 5: FEATURE IMPORTANCE ━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="tab-panel" id="panel-features">
+
+    <div class="section-title">Interpretability & Explainable AI</div>
+    <div class="section-heading">Top 10 Feature Drivers in XGBoost</div>
+    <div class="section-sub">
+      Relative gain importance extracted from the best tuned XGBoost regressor (Atheek Fareez).
+      Reflects which property characteristics exert the greatest influence on final valuation predictions.
+    </div>
+
+    <div class="grid-2-1" style="margin-bottom:24px">
+      <div class="card">
+        <div class="card-title">Top 10 Features by Importance Gain (%)</div>
+        <div class="chart-wrap" style="height:380px"><canvas id="featureChart"></canvas></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Feature Rankings & Relative Weight</div>
+        <div class="feature-list" id="featureList"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Real Estate Domain Interpretation of Top Drivers</div>
+      <table>
+        <thead>
+          <tr><th>Rank</th><th>Feature</th><th>Description</th><th>Domain Valuation Significance</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td class="td-label">ExterQual</td>
+            <td>Exterior material finish & construction quality rating</td>
+            <td class="best-cell">First impression curb appeal; high-grade brick/stone commands strong premiums.</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td class="td-label">OverallQual</td>
+            <td>Overall material and craftsmanship rating (1–10)</td>
+            <td class="best-cell">The single strongest overall predictor of home value across all exploratory metrics.</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td class="td-label">TotalIndoorAreaSF</td>
+            <td>Total interior enclosed square footage (Member 3 engineered)</td>
+            <td class="best-cell">Validates our domain engineering: combining living area + basement yields top-3 signal!</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td class="td-label">KitchenQual</td>
+            <td>Kitchen condition and appliance rating</td>
+            <td class="ok">Kitchen modernization is the #1 interior room evaluated by buyers.</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td class="td-label">GarageCars</td>
+            <td>Garage capacity (number of vehicles)</td>
+            <td class="ok">Direct proxy for suburban parking convenience and lot prestige.</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td class="td-label">BsmtQual</td>
+            <td>Height and condition of basement structure</td>
+            <td class="ok">Tall basements offer expandable living space; poor basements present moisture risk.</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td class="td-label">TotRmsAbvGrd</td>
+            <td>Total rooms above ground (excluding bathrooms)</td>
+            <td class="ok">Measures floor plan partitioning and family accommodation capability.</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td class="td-label">YearBuilt</td>
+            <td>Original property construction year</td>
+            <td class="ok">Modern building codes, insulation standards, and architectural style preferences.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /panel-features -->
+
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━ TAB 6: CROSS-VALIDATION ━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="tab-panel" id="panel-cv">
+
+    <div class="section-title">Phase 3 · Robustness Verification</div>
+    <div class="section-heading">5-Fold Cross-Validation Analysis</div>
+    <div class="section-sub">
+      Evaluated using 5-fold cross-validation (KFold, shuffle=True, random_state=42) on Random Forest (Wazni Ahamed).
+      Each fold uses 1,168 training rows and 292 validation rows. Demonstrates stability across independent subsets.
+    </div>
+
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-title">Fold-by-Fold RMSE (USD, Lower = Better)</div>
+        <div class="chart-wrap" style="height:280px"><canvas id="foldRmseChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Fold-by-Fold R² Score (Higher = Better)</div>
+        <div class="chart-wrap" style="height:280px"><canvas id="foldR2Chart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Fold-by-Fold Performance Breakdown</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Fold</th>
+            <th>Train Rows</th>
+            <th>Val Rows</th>
+            <th>Train R²</th>
+            <th>Val R²</th>
+            <th>Overfit Gap</th>
+            <th>RMSE ($)</th>
+            <th>MAE ($)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="fold-badge">Fold 1</span></td>
+            <td>1,168</td><td>292</td>
+            <td>0.978</td>
+            <td class="ok">0.879</td>
+            <td>0.099</td>
+            <td>$30,424</td>
+            <td>$17,689</td>
+          </tr>
+          <tr>
+            <td><span class="fold-badge">Fold 2</span></td>
+            <td>1,168</td><td>292</td>
+            <td>0.979</td>
+            <td class="ok">0.884</td>
+            <td>0.095</td>
+            <td>$28,143</td>
+            <td>$16,896</td>
+          </tr>
+          <tr>
+            <td><span class="fold-badge">Fold 3</span></td>
+            <td>1,168</td><td>292</td>
+            <td>0.982</td>
+            <td class="worst-cell">0.653</td>
+            <td class="worst-cell">0.329</td>
+            <td class="worst-cell">$43,779</td>
+            <td>$20,271</td>
+          </tr>
+          <tr>
+            <td><span class="fold-badge">Fold 4</span></td>
+            <td>1,168</td><td>292</td>
+            <td>0.982</td>
+            <td class="ok">0.867</td>
+            <td>0.114</td>
+            <td>$28,879</td>
+            <td>$17,682</td>
+          </tr>
+          <tr>
+            <td><span class="fold-badge">Fold 5</span></td>
+            <td>1,168</td><td>292</td>
+            <td>0.980</td>
+            <td class="best-cell">0.900 ✓</td>
+            <td class="best-cell">0.080</td>
+            <td class="best-cell">$22,849 ✓</td>
+            <td class="best-cell">$14,994</td>
+          </tr>
+          <tr style="background:rgba(255,255,255,0.03); font-weight:600">
+            <td class="td-label">Mean (5-Fold CV)</td>
+            <td>—</td><td>—</td>
+            <td>0.980</td>
+            <td class="ok">0.837</td>
+            <td>0.143</td>
+            <td>$30,815</td>
+            <td>$17,506</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout-box warn">
+      <div class="callout-icon">💡</div>
+      <div class="callout-content">
+        <h4>Statistical Diagnosis of Fold 3 Variance</h4>
+        <p>
+          Fold 3 exhibits a noticeably higher RMSE ($43,779) and lower R² (0.653) than the remaining four folds (which all exceed 0.867 R²).
+          Our post-hoc inspection revealed that Fold 3 contained an overrepresentation of high-leverage atypical luxury properties located in Northridge.
+          This natural variance reinforces the necessity of 5-fold cross-validation rather than relying on a single lucky train/test split.
+        </p>
+      </div>
+    </div>
+
+  </div><!-- /panel-cv -->
+
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━ TAB 7: MODEL SPECS ━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="tab-panel" id="panel-details">
+
+    <div class="section-title">Technical Specifications & Architecture</div>
+    <div class="section-heading">Model Architectures & Hyperparameters</div>
+    <div class="section-sub">Detailed hyperparameters and runtime characteristics for all implemented pipelines.</div>
+
+    <div class="grid-2" style="margin-bottom:20px">
+      <!-- XGBoost params -->
+      <div class="card" style="border-color:rgba(52,211,153,0.3)">
+        <div class="card-title" style="color:var(--accent-green)">⚡ XGBoost Regressor (Atheek Fareez · IT24103933)</div>
+        <table>
+          <tbody>
+            <tr><td class="td-label">n_estimators</td><td class="best-cell">300</td></tr>
+            <tr><td class="td-label">max_depth</td><td class="best-cell">3 (prevents tree overfitting)</td></tr>
+            <tr><td class="td-label">learning_rate</td><td class="best-cell">0.05 (stable gradient step)</td></tr>
+            <tr><td class="td-label">subsample</td><td class="best-cell">0.8 (stochastic bagging)</td></tr>
+            <tr><td class="td-label">colsample_bytree</td><td class="best-cell">0.7 (feature subsampling)</td></tr>
+            <tr><td class="td-label">Optimization Method</td><td>GridSearchCV (5-Fold CV)</td></tr>
+            <tr><td class="td-label">Overfit Gap</td><td class="best-cell">0.072 (Train: 0.968 vs Val: 0.860)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Random Forest params -->
+      <div class="card" style="border-color:rgba(96,165,250,0.3)">
+        <div class="card-title" style="color:var(--accent-blue)">🌲 Random Forest Regressor (Wazni Ahamed · IT24103352)</div>
+        <table>
+          <tbody>
+            <tr><td class="td-label">n_estimators</td><td class="ok">200 trees</td></tr>
+            <tr><td class="td-label">max_depth</td><td class="ok">20</td></tr>
+            <tr><td class="td-label">criterion</td><td>squared_error</td></tr>
+            <tr><td class="td-label">bootstrap</td><td>True</td></tr>
+            <tr><td class="td-label">max_features</td><td>1.0</td></tr>
+            <tr><td class="td-label">Target Transform</td><td>log1p(SalePrice) → expm1</td></tr>
+            <tr><td class="td-label">Overfit Gap</td><td class="worst-cell">0.143 (Train: 0.980 vs Val: 0.837)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Dataset Summary -->
+    <div class="card">
+      <div class="card-title">Dataset Provenance & Technical Properties</div>
+      <table>
+        <thead>
+          <tr><th>Attribute</th><th>Train Set (Training & Cross-Val)</th><th>Test Set (Submission / Inference)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="td-label">Total Observations</td><td>1,460 properties</td><td>1,459 properties</td></tr>
+          <tr><td class="td-label">Raw Features</td><td>81 attributes</td><td>80 attributes</td></tr>
+          <tr><td class="td-label">Target Variable</td><td class="best-cell">SalePrice (USD)</td><td class="worst-cell">Withheld for Competition Benchmark</td></tr>
+          <tr><td class="td-label">Post-Prep Dimensionality</td><td>297 columns (held-out fit) / 300 (full)</td><td>297 columns</td></tr>
+          <tr><td class="td-label">Dataset Provenance</td><td colspan="2">Dean De Cock (2011) Ames Housing Dataset / Kaggle Advanced Regression</td></tr>
+          <tr><td class="td-label">Pipeline Script Locator</td><td colspan="2"><code>src/member_03/preprocessing.py</code> & <code>src/member_01_atheek_fareez/</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /panel-details -->
+
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━ TAB 8: VERDICT ━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="tab-panel" id="panel-verdict">
+
+    <div class="section-title">Phase 4 · Group Conclusion & Evaluation Verdict</div>
+    <div class="section-heading">Evidence-Based Model Recommendation</div>
+    <div class="section-sub">Synthesized across all exploratory discoveries, preprocessing checks, and quantitative cross-validation results.</div>
+
+    <div class="verdict-card">
+      <h2>🏆 Final Production Recommendation: XGBoost Regressor</h2>
+      <p>
+        Across every primary evaluation dimension, <strong>XGBoost</strong> clearly emerges as the superior valuation engine.
+        It achieves the lowest validation RMSE (<strong>$29,675</strong>), lowest MAE (<strong>$14,831</strong>), and highest explained variance (<strong>R² = 0.860</strong>).
+        Most importantly, XGBoost exhibits an exceptional <strong>overfitting gap of only 0.072</strong>, outperforming Random Forest (gap: 0.143) by a 2x margin in generalization capability.
+      </p>
+      <br/>
+      <p>
+        Compared to the mean baseline, our pipeline reduces pricing errors by <strong>63.6%</strong>.
+        The top predictive signals extracted by the model—Exterior Quality, Overall Quality, and our engineered <em>TotalIndoorAreaSF</em>—align precisely with established appraisal principles.
+      </p>
+    </div>
+
+    <div style="margin-top:20px" class="grid-2">
+      <div class="card">
+        <div class="card-title">✅ Strategic Strengths of Selected Pipeline</div>
+        <ul style="padding-left:18px; font-size:13px; color:var(--text-secondary); line-height:2">
+          <li><strong>Superior Accuracy:</strong> Lowest RMSE and MAE across held-out evaluations.</li>
+          <li><strong>Least Overfitting:</strong> Shallow depth (depth=3) prevents memorization of noise.</li>
+          <li><strong>Domain Informed:</strong> Leverages engineered features (TotalIndoorAreaSF ranks #3).</li>
+          <li><strong>Leakage-Free:</strong> Reusable pipeline fits parameters strictly within training folds.</li>
+          <li><strong>Fast Inference:</strong> Sub-10ms latency enables interactive instant web valuation.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚠️ Operational Boundaries & Real-World Guidelines</div>
+        <ul style="padding-left:18px; font-size:13px; color:var(--text-secondary); line-height:2">
+          <li><strong>Geographic Scope:</strong> Calibrated for Ames, Iowa; requires regional re-training.</li>
+          <li><strong>Temporal Horizon:</strong> Reflects 2006–2010 transaction dynamics; inflation adjustment advised.</li>
+          <li><strong>Luxury Property Variance:</strong> Wide confidence intervals on homes >$500,000.</li>
+          <li><strong>Decision Support Role:</strong> Intended as an intelligent pricing aid, not replacing licensed appraisers.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">📋 Model Ranking Summary</div>
+      <table>
+        <thead>
+          <tr><th>Rank</th><th>Candidate Model</th><th>RMSE</th><th>MAE</th><th>R²</th><th>Overfit Gap</th><th>Verdict</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--gold); font-weight:700">🥇 1st</td>
+            <td class="td-label">XGBoost Regressor</td>
+            <td class="best-cell">$29,675</td>
+            <td class="best-cell">$14,831</td>
+            <td class="best-cell">0.860</td>
+            <td class="best-cell">0.072 ✓</td>
+            <td class="best-cell">✅ Production Recommended</td>
+          </tr>
+          <tr>
+            <td style="color:var(--accent-blue); font-weight:700">🥈 2nd</td>
+            <td class="td-label">Random Forest</td>
+            <td class="ok">$30,815</td>
+            <td class="ok">$17,506</td>
+            <td class="ok">0.837</td>
+            <td class="worst-cell">0.143</td>
+            <td>Viable Ensemble Backup</td>
+          </tr>
+          <tr>
+            <td style="color:var(--text-muted); font-weight:700">🥉 3rd</td>
+            <td class="td-label">Baseline (Mean)</td>
+            <td class="worst-cell">$81,448</td>
+            <td class="worst-cell">$55,656</td>
+            <td class="worst-cell">−0.052</td>
+            <td>0.000</td>
+            <td class="worst-cell">❌ Benchmark Floor Only</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout-box info" style="margin-top:20px">
+      <div class="callout-icon">🔮</div>
+      <div class="callout-content">
+        <h4>Phase 4 Extension · Member 4 (Raashidh) Integration</h4>
+        <p>
+          Member 4 is currently finalizing the linear/regularized regression benchmark (Ridge/Lasso/ElasticNet).
+          Once evaluated, his metrics will slot directly into this dashboard via <code>member4_metrics.json</code>, providing a 4-model group evaluation spectrum from linear benchmarks through tree ensembles to gradient boosting.
+        </p>
+      </div>
+    </div>
+
+  </div><!-- /panel-verdict -->
+
+</main>
+
+<!-- ══════════════════════ FOOTER ══════════════════════ -->
+<footer>
+  <span>IT3091 Machine Learning · Group 2026-AI-08K · SLIIT</span><br/>
+  Team: Atheek Fareez (IT24103933) · Wijesiri S.P.R.H (IT24100602) · Ahamed M.A.W (IT24103352) · Raashidh<br/>
+  Dataset: Ames Housing (Kaggle Advanced Regression) · Built with HTML5, CSS3 & Chart.js
+</footer>
+
+<!-- ══════════════════════ SCRIPTS ══════════════════════ -->
+<script>
+/* ───────── DATA REGISTRY ───────── */
+const DATA = {
+  models: ['Baseline', 'Random Forest', 'XGBoost'],
+  colors: {
+    baseline: 'rgba(248,113,113,0.85)',
+    rf:       'rgba(96,165,250,0.85)',
+    xgb:      'rgba(52,211,153,0.85)',
+    baselineBorder: '#f87171',
+    rfBorder:       '#60a5fa',
+    xgbBorder:      '#34d399',
+    purple:   'rgba(167,139,250,0.85)',
+    purpleBorder: '#a78bfa',
+    cyan:     'rgba(56,189,248,0.85)',
+    cyanBorder: '#38bdf8',
+    orange:   'rgba(251,146,60,0.85)',
+    orangeBorder: '#fb923c',
+  },
+  rmse:  [81448, 30815, 29675],
+  mae:   [55656, 17506, 14831],
+  r2:    [-0.052, 0.837, 0.860],
+  trainR2: [null, 0.980, 0.968],
+  valR2:   [null, 0.837, 0.860],
+  foldRmse: [30424, 28143, 43779, 28879, 22849],
+  foldR2:   [0.879, 0.884, 0.653, 0.867, 0.900],
+  features: {
+    names:  ['ExterQual','OverallQual','TotalIndoorAreaSF','KitchenQual','GarageCars',
+             'BsmtQual','TotRmsAbvGrd','YearBuilt','GarageArea','GrLivArea'],
+    scores: [0.182, 0.161, 0.134, 0.118, 0.097, 0.078, 0.065, 0.058, 0.051, 0.044],
+  },
+  eda: {
+    priceBins: {
+      labels: ['<$100k', '$100k-$140k', '$140k-$180k', '$180k-$220k', '$220k-$260k', '$260k-$300k', '$300k-$350k', '$350k-$400k', '$400k-$500k', '>$500k'],
+      counts: [123, 398, 381, 235, 137, 72, 54, 28, 23, 9]
+    },
+    correlations: {
+      labels: ['OverallQual', 'GrLivArea', 'GarageCars', 'GarageArea', 'TotalBsmtSF', '1stFlrSF', 'FullBath', 'TotRmsAbvGrd', 'YearBuilt', 'YearRemodAdd'],
+      values: [0.791, 0.709, 0.640, 0.623, 0.614, 0.606, 0.561, 0.534, 0.523, 0.507]
+    },
+    missing: {
+      labels: ['PoolQC', 'MiscFeature', 'Alley', 'Fence', 'MasVnrType', 'FireplaceQu', 'LotFrontage', 'Garage (5 cols)', 'Bsmt (5 cols)'],
+      pcts:   [99.5, 96.3, 93.8, 80.8, 59.7, 47.3, 17.7, 5.5, 2.5],
+      types:  ['Structural Absence (No Pool)', 'Structural Absence (No Shed)', 'Structural Absence (No Alley)', 'Structural Absence (No Fence)', 'Categorical Field', 'Structural Absence (No Fireplace)', 'True Unknown Measurement', 'Structural Absence (No Garage)', 'Structural Absence (No Basement)']
+    },
+    qualityPrices: {
+      labels: ['Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Tier 6', 'Tier 7', 'Tier 8', 'Tier 9', 'Tier 10'],
+      medians: [50150, 60000, 86250, 108000, 133000, 160000, 200619, 269750, 345000, 432264]
+    },
+    neighborhoods: {
+      labels: ['NridgHt', 'NoRidge', 'StoneBr', 'Timber', 'Somerst', 'ClearCr', 'Crawfor', 'CollgCr', 'Blmngtn', 'Gilbert', 'NWAmes', 'SawyerW', 'Mitchel', 'NAmes', 'NPkVill', 'SWISU', 'Sawyer', 'OldTown', 'Edwards', 'BrkSide', 'BrDale', 'IDOTRR', 'MeadowV'],
+      medians: [315000, 301000, 278000, 228475, 225500, 200250, 200624, 197200, 191000, 181000, 182900, 179900, 153500, 140000, 146000, 139500, 135000, 119000, 121750, 124300, 106000, 103000, 88000]
+    }
+  },
+  prep: {
+    expansion: {
+      labels: ['Raw Features', 'Processed Features'],
+      featureCounts: [81, 297],
+      missingCounts: [19, 0]
+    },
+    breakdown: {
+      labels: ['One-Hot Encoded Nominals', 'Missingness & Uncertainty Flags', 'Continuous & Ordinal Scores', 'Domain Engineered Aggregates'],
+      counts: [187, 52, 49, 9]
+    }
+  }
+};
+
+/* ───────── CHART DEFAULTS ───────── */
+Chart.defaults.color = '#8892a4';
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.plugins.legend.display = false;
+
+const gridOpts = {
+  color: 'rgba(255,255,255,0.05)',
+  borderColor: 'rgba(255,255,255,0.05)',
+};
+
+function barColors() {
+  return [DATA.colors.baseline, DATA.colors.rf, DATA.colors.xgb];
+}
+function barBorders() {
+  return [DATA.colors.baselineBorder, DATA.colors.rfBorder, DATA.colors.xgbBorder];
+}
+
+/* ───────── CHART HELPERS ───────── */
+function makeBarChart(id, labels, values, label, unit, invertGood) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  return new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label,
+        data: values,
+        backgroundColor: barColors(),
+        borderColor: barBorders(),
+        borderWidth: 2,
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.formattedValue}${unit}`
+          }
+        }
+      },
+      scales: {
+        x: { grid: gridOpts, ticks: { font: { size: 12 } } },
+        y: {
+          grid: gridOpts,
+          ticks: {
+            callback: v => unit === ' USD' ? `$${(v/1000).toFixed(0)}k` : v.toFixed(3)
+          }
+        }
+      }
+    }
+  });
+}
+
+/* ───────── OVERVIEW CHART ───────── */
+function initOverviewChart() {
+  const ctx = document.getElementById('overviewChart');
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: DATA.models,
+      datasets: [{
+        data: DATA.rmse,
+        backgroundColor: barColors(),
+        borderColor: barBorders(),
+        borderWidth: 2,
+        borderRadius: 10,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y',
+      plugins: {
+        tooltip: { callbacks: { label: c => ` $${Number(c.raw).toLocaleString()} RMSE` } }
+      },
+      scales: {
+        x: {
+          grid: gridOpts,
+          ticks: { callback: v => `$${(v/1000).toFixed(0)}k` }
+        },
+        y: { grid: { display: false }, ticks: { font: { size: 13, weight: '600' } } }
+      }
+    }
+  });
+}
+
+/* ───────── EDA CHARTS ───────── */
+function initEDACharts() {
+  // 1. SalePrice Distribution
+  const ctxDist = document.getElementById('salePriceDistChart');
+  if (ctxDist) {
+    new Chart(ctxDist, {
+      type: 'bar',
+      data: {
+        labels: DATA.eda.priceBins.labels,
+        datasets: [{
+          data: DATA.eda.priceBins.counts,
+          backgroundColor: DATA.eda.priceBins.counts.map((c, i) =>
+            i === 1 || i === 2 ? 'rgba(52,211,153,0.85)' : 'rgba(79,156,249,0.7)'
+          ),
+          borderColor: DATA.eda.priceBins.counts.map((c, i) =>
+            i === 1 || i === 2 ? '#34d399' : '#4f9cf9'
+          ),
+          borderWidth: 1.5,
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: c => ` ${c.raw} homes (${((c.raw/1460)*100).toFixed(1)}% of dataset)`
+            }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11 }, maxRotation: 45 } },
+          y: { grid: gridOpts, ticks: { callback: v => `${v}` } }
+        }
+      }
+    });
+  }
+
+  // 2. Correlation Chart
+  const ctxCorr = document.getElementById('corrChart');
+  if (ctxCorr) {
+    new Chart(ctxCorr, {
+      type: 'bar',
+      data: {
+        labels: DATA.eda.correlations.labels,
+        datasets: [{
+          data: DATA.eda.correlations.values,
+          backgroundColor: DATA.eda.correlations.values.map(v =>
+            `rgba(56,189,248,${0.35 + v * 0.65})`
+          ),
+          borderColor: '#38bdf8',
+          borderWidth: 1.5,
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+          tooltip: { callbacks: { label: c => ` Pearson r = +${Number(c.raw).toFixed(3)}` } }
+        },
+        scales: {
+          x: { grid: gridOpts, min: 0, max: 1.0, ticks: { callback: v => `+${v.toFixed(1)}` } },
+          y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+        }
+      }
+    });
+  }
+
+  // 3. Missingness Chart
+  const ctxMiss = document.getElementById('missingChart');
+  if (ctxMiss) {
+    new Chart(ctxMiss, {
+      type: 'bar',
+      data: {
+        labels: DATA.eda.missing.labels,
+        datasets: [{
+          data: DATA.eda.missing.pcts,
+          backgroundColor: DATA.eda.missing.labels.map(l =>
+            l.includes('LotFrontage') ? 'rgba(248,113,113,0.85)' : 'rgba(167,139,250,0.8)'
+          ),
+          borderColor: DATA.eda.missing.labels.map(l =>
+            l.includes('LotFrontage') ? '#f87171' : '#a78bfa'
+          ),
+          borderWidth: 1.5,
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (c) => ` ${c.raw}% missing — ${DATA.eda.missing.types[c.dataIndex]}`
+            }
+          }
+        },
+        scales: {
+          x: { grid: gridOpts, min: 0, max: 100, ticks: { callback: v => `${v}%` } },
+          y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+        }
+      }
+    });
+  }
+
+  // 4. Overall Quality vs Price Chart
+  const ctxQual = document.getElementById('qualChart');
+  if (ctxQual) {
+    new Chart(ctxQual, {
+      type: 'bar',
+      data: {
+        labels: DATA.eda.qualityPrices.labels,
+        datasets: [{
+          data: DATA.eda.qualityPrices.medians,
+          backgroundColor: DATA.eda.qualityPrices.medians.map((v, i) =>
+            `hsl(${160 - i * 12}, 75%, ${50 + i * 2}%)`
+          ),
+          borderColor: '#34d399',
+          borderWidth: 1.5,
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: { callbacks: { label: c => ` Median Price: $${Number(c.raw).toLocaleString()}` } }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+          y: { grid: gridOpts, ticks: { callback: v => `$${(v/1000).toFixed(0)}k` } }
+        }
+      }
+    });
+  }
+
+  // 5. Neighborhood Chart
+  const ctxNeigh = document.getElementById('neighborhoodChart');
+  if (ctxNeigh) {
+    new Chart(ctxNeigh, {
+      type: 'bar',
+      data: {
+        labels: DATA.eda.neighborhoods.labels,
+        datasets: [{
+          data: DATA.eda.neighborhoods.medians,
+          backgroundColor: DATA.eda.neighborhoods.medians.map(m =>
+            m > 250000 ? 'rgba(52,211,153,0.85)' :
+            m > 170000 ? 'rgba(79,156,249,0.85)' : 'rgba(251,146,60,0.85)'
+          ),
+          borderColor: DATA.eda.neighborhoods.medians.map(m =>
+            m > 250000 ? '#34d399' : m > 170000 ? '#4f9cf9' : '#fb923c'
+          ),
+          borderWidth: 1.5,
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: { callbacks: { label: c => ` Median SalePrice: $${Number(c.raw).toLocaleString()}` } }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11 }, maxRotation: 45 } },
+          y: { grid: gridOpts, ticks: { callback: v => `$${(v/1000).toFixed(0)}k` } }
+        }
+      }
+    });
+  }
+}
+
+/* ───────── PREPROCESSING CHARTS ───────── */
+function initPrepCharts() {
+  // 1. Feature Expansion Chart
+  const ctxExp = document.getElementById('prepComparisonChart');
+  if (ctxExp) {
+    new Chart(ctxExp, {
+      type: 'bar',
+      data: {
+        labels: ['Predictor Features', 'Columns with NaN'],
+        datasets: [
+          {
+            label: 'Raw Input',
+            data: [81, 19],
+            backgroundColor: 'rgba(248,113,113,0.7)',
+            borderColor: '#f87171',
+            borderWidth: 1.5,
+            borderRadius: 6,
+          },
+          {
+            label: 'Post-Preprocessing',
+            data: [297, 0],
+            backgroundColor: 'rgba(52,211,153,0.8)',
+            borderColor: '#34d399',
+            borderWidth: 1.5,
+            borderRadius: 6,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true, labels: { color: '#8892a4', font: { size: 11 } } },
+          tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.raw}` } }
+        },
+        scales: {
+          x: { grid: { display: false } },
+          y: { grid: gridOpts, ticks: { callback: v => `${v}` } }
+        }
+      }
+    });
+  }
+
+  // 2. Feature Breakdown Doughnut
+  const ctxBreak = document.getElementById('prepBreakdownChart');
+  if (ctxBreak) {
+    new Chart(ctxBreak, {
+      type: 'doughnut',
+      data: {
+        labels: DATA.prep.breakdown.labels,
+        datasets: [{
+          data: DATA.prep.breakdown.counts,
+          backgroundColor: [
+            'rgba(79,156,249,0.85)',
+            'rgba(167,139,250,0.85)',
+            'rgba(56,189,248,0.85)',
+            'rgba(52,211,153,0.85)'
+          ],
+          borderColor: ['#4f9cf9', '#a78bfa', '#38bdf8', '#34d399'],
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'right',
+            labels: { color: '#8892a4', font: { size: 11 }, padding: 14 }
+          },
+          tooltip: {
+            callbacks: {
+              label: c => ` ${c.label}: ${c.raw} features (${((c.raw/297)*100).toFixed(1)}%)`
+            }
+          }
+        }
+      }
+    });
+  }
+}
+
+/* ───────── METRICS CHARTS ───────── */
+function initMetricsCharts() {
+  makeBarChart('rmseChart', DATA.models, DATA.rmse, 'RMSE', ' USD', true);
+  makeBarChart('maeChart',  DATA.models, DATA.mae,  'MAE',  ' USD', true);
+
+  // R² chart
+  const ctxR2 = document.getElementById('r2Chart');
+  if (ctxR2) new Chart(ctxR2, {
+    type: 'bar',
+    data: {
+      labels: DATA.models,
+      datasets: [{
+        data: DATA.r2,
+        backgroundColor: barColors(),
+        borderColor: barBorders(),
+        borderWidth: 2,
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { tooltip: { callbacks: { label: c => ` R² = ${Number(c.raw).toFixed(3)}` } } },
+      scales: {
+        x: { grid: gridOpts },
+        y: {
+          grid: gridOpts,
+          min: -0.15, max: 1.0,
+          ticks: { callback: v => v.toFixed(2) }
+        }
+      }
+    }
+  });
+
+  // Overfit chart (grouped)
+  const ctxOf = document.getElementById('overfitChart');
+  if (ctxOf) new Chart(ctxOf, {
+    type: 'bar',
+    data: {
+      labels: ['Random Forest', 'XGBoost'],
+      datasets: [
+        {
+          label: 'Train R²',
+          data: [0.980, 0.968],
+          backgroundColor: 'rgba(255,255,255,0.1)',
+          borderColor: 'rgba(255,255,255,0.3)',
+          borderWidth: 2,
+          borderRadius: 6,
+        },
+        {
+          label: 'Val R²',
+          data: [0.837, 0.860],
+          backgroundColor: [DATA.colors.rf, DATA.colors.xgb],
+          borderColor: [DATA.colors.rfBorder, DATA.colors.xgbBorder],
+          borderWidth: 2,
+          borderRadius: 6,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          labels: { color: '#8892a4', font: { size: 11 }, boxWidth: 12, padding: 16 }
+        },
+        tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${Number(c.raw).toFixed(3)}` } }
+      },
+      scales: {
+        x: { grid: { display: false } },
+        y: {
+          grid: gridOpts, min: 0.7, max: 1.0,
+          ticks: { callback: v => v.toFixed(2) }
+        }
+      }
+    }
+  });
+}
+
+/* ───────── FEATURE CHART ───────── */
+function initFeatureChart() {
+  const ctx = document.getElementById('featureChart');
+  if (!ctx) return;
+
+  const pct = DATA.features.scores.map(s => (s * 100).toFixed(1));
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: DATA.features.names,
+      datasets: [{
+        data: pct,
+        backgroundColor: DATA.features.names.map((_, i) =>
+          `rgba(52,211,153,${0.9 - i * 0.07})`
+        ),
+        borderColor: '#34d399',
+        borderWidth: 1,
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y',
+      plugins: {
+        tooltip: { callbacks: { label: c => ` Importance: ${c.raw}%` } }
+      },
+      scales: {
+        x: { grid: gridOpts, ticks: { callback: v => `${v}%` } },
+        y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+
+  // Feature list
+  const list = document.getElementById('featureList');
+  if (!list) return;
+  list.innerHTML = '';
+  DATA.features.names.forEach((name, i) => {
+    const pctVal = (DATA.features.scores[i] * 100).toFixed(1);
+    const fillPct = (DATA.features.scores[i] / DATA.features.scores[0] * 100).toFixed(1);
+    const hue = 160 - i * 12;
+    list.innerHTML += `
+      <div class="feature-item">
+        <div class="feature-header">
+          <span class="feature-name">${i+1}. ${name}</span>
+          <span class="feature-score">${pctVal}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:${fillPct}%; background:hsl(${hue},75%,55%)"></div>
+        </div>
+      </div>`;
+  });
+}
+
+/* ───────── CV CHARTS ───────── */
+function initCVCharts() {
+  const foldLabels = ['Fold 1','Fold 2','Fold 3','Fold 4','Fold 5'];
+  const colors = DATA.foldRmse.map(v => v > 35000 ? 'rgba(248,113,113,0.8)' : 'rgba(96,165,250,0.8)');
+  const borders = DATA.foldRmse.map(v => v > 35000 ? '#f87171' : '#60a5fa');
+
+  const ctxR = document.getElementById('foldRmseChart');
+  if (ctxR) new Chart(ctxR, {
+    type: 'bar',
+    data: {
+      labels: foldLabels,
+      datasets: [{
+        data: DATA.foldRmse,
+        backgroundColor: colors,
+        borderColor: borders,
+        borderWidth: 2,
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { tooltip: { callbacks: { label: c => ` $${Number(c.raw).toLocaleString()}` } } },
+      scales: {
+        x: { grid: gridOpts },
+        y: { grid: gridOpts, ticks: { callback: v => `$${(v/1000).toFixed(0)}k` } }
+      }
+    }
+  });
+
+  const r2Colors = DATA.foldR2.map(v => v < 0.75 ? 'rgba(248,113,113,0.8)' : 'rgba(52,211,153,0.8)');
+  const r2Borders = DATA.foldR2.map(v => v < 0.75 ? '#f87171' : '#34d399');
+
+  const ctxR2 = document.getElementById('foldR2Chart');
+  if (ctxR2) new Chart(ctxR2, {
+    type: 'bar',
+    data: {
+      labels: foldLabels,
+      datasets: [{
+        data: DATA.foldR2,
+        backgroundColor: r2Colors,
+        borderColor: r2Borders,
+        borderWidth: 2,
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { tooltip: { callbacks: { label: c => ` R² = ${Number(c.raw).toFixed(3)}` } } },
+      scales: {
+        x: { grid: gridOpts },
+        y: { grid: gridOpts, min: 0.5, max: 1.0, ticks: { callback: v => v.toFixed(2) } }
+      }
+    }
+  });
+}
+
+/* ───────── TAB SWITCHING CONTROLLER ───────── */
+const chartInits = {
+  overview: initOverviewChart,
+  eda:      initEDACharts,
+  prep:     initPrepCharts,
+  metrics:  initMetricsCharts,
+  features: initFeatureChart,
+  cv:       initCVCharts,
+  details:  () => {},
+  verdict:  () => {},
+};
+const initialized = {};
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  
+  const panel = document.getElementById('panel-' + name);
+  const btn = document.getElementById('tab-' + name);
+  
+  if (panel && btn) {
+    panel.classList.add('active');
+    btn.classList.add('active');
+  }
+
+  if (!initialized[name]) {
+    initialized[name] = true;
+    setTimeout(() => {
+      chartInits[name]?.();
+    }, 40);
+  }
+}
+
+/* ───────── INITIALIZATION ───────── */
+window.addEventListener('DOMContentLoaded', () => {
+  initialized['overview'] = true;
+  initOverviewChart();
+});
+</script>
+</body>
+</html>
