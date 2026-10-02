@@ -1,0 +1,30 @@
+{
+    "member": "Member 1 - Atheek M. F (IT24103933)",
+    "model_name": "XGBoost Regressor",
+    "baseline_benchmark": {
+        "rmse": 81448.15981418558,
+        "mae": 55655.517527016964,
+        "r2": -0.0518511358581879
+    },
+    "xgboost_performance": {
+        "rmse": 29675.444581709347,
+        "mae": 14831.263843107878,
+        "r2": 0.8603676024327476,
+        "train_r2": 0.9680223903617524,
+        "overfit_gap": 0.07232177480294288
+    },
+    "best_parameters": {
+        "regressor__colsample_bytree": 0.7,
+        "regressor__learning_rate": 0.05,
+        "regressor__max_depth": 3,
+        "regressor__n_estimators": 300,
+        "regressor__subsample": 0.8
+    },
+    "top_5_features": [
+        "ExterQual",
+        "OverallQual",
+        "TotalIndoorAreaSF",
+        "KitchenQual",
+        "GarageCars"
+    ]
+}

@@ -136,22 +136,70 @@ interpretability, data characteristics, and the project requirements.
 
 ---
 
-## 7. Project Structure
+## 7. Team Members
+
+| Member | Student ID | Role |
+|--------|-----------|------|
+| **Atheek Fareez** (Member 1) | IT24103933 | Model Training & Evaluation (XGBoost) |
+| **Wijesiri** (Member 2) | — | Data Understanding, EDA & Data Quality |
+| **Wazni Ahamed** (Member 3) | IT24103352 | Preprocessing & Feature Engineering + Random Forest |
+| **Raashidh** (Member 4) | — | Model Deployment & Comparison |
+
+---
+
+## 8. Project Structure
 
 ```text
 IT3091-House-Price-Prediction/
-│
-├── data/
-│   ├── train.csv
-│   ├── test.csv
-│   └── README.md
-│
-├── notebooks/
-│
-├── docs/
-│  
-├── reports/
-│
-├── README.md
-├── requirements.txt
-└── .gitignore
+|
+|-- data/
+|   |-- raw/
+|   |   |-- train.csv
+|   |   `-- test.csv
+|   `-- processed/
+|       `-- member_03/          <- Preprocessed data by Wazni Ahamed
+|
+|-- notebooks/
+|   |-- Member_01_Atheek_Fareez/
+|   |   `-- IT24103933_XGBoost_Model_Pipeline.ipynb
+|   |-- Member_02_Wijesiri/
+|   |   `-- Member2_DataUnderstanding_EDA_DQ.ipynb
+|   |-- Member_03_Wazni_Ahamed/
+|   |   |-- Member3_Preprocessing_FeatureEngineering.ipynb
+|   |   `-- Member3_Random_Forest.ipynb
+|   `-- Member_04_Raashidh/
+|
+|-- reports/
+|   |-- Member_01_Atheek_Fareez/
+|   |   |-- member1_residuals.png
+|   |   |-- member1_top_features.png
+|   |   |-- member1_xgb_metrics.json
+|   |   `-- submission_xgb.csv
+|   |-- Member_02_Wijesiri/
+|   |   |-- Member2_Data_Understanding_EDA_Data_Quality_Report.md
+|   |   `-- Member2_Data_Understanding_EDA_Data_Quality_Report.pdf
+|   |-- Member_03_Wazni_Ahamed/
+|   |   |-- Member3_Preprocessing_Feature_Engineering_Report.md
+|   |   |-- IT3091_Member3_Preprocessing_Feature_Engineering_Report.docx
+|   |   |-- IT3091_Member3_Random_Forest_Model_Training_Report.docx
+|   |   |-- feature_schema.csv
+|   |   `-- preprocessing_feature_decision_log.csv
+|   `-- Member_04_Raashidh/
+|
+|-- src/
+|   |-- member_01_atheek_fareez/
+|   |   `-- it24103933_xgboost_model_pipeline.py
+|   `-- member_03_wazni_ahamed/
+|       |-- preprocessing.py
+|       `-- __init__.py
+|
+|-- docs/
+|   |-- member_01_execution_guide.md
+|   |-- ML-[Group-8-Balanced-Project-Plan].md
+|   |-- ML-[Group-Assignment-Descriptor].md
+|   `-- ML-[ASSIGMENT-NOTICES-COURSEWEB].md
+|
+|-- README.md
+|-- requirements.txt
+`-- .gitignore
+```
