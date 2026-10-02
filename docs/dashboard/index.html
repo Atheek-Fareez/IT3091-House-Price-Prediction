@@ -124,42 +124,61 @@
     .team-pill span { color: var(--text-primary); font-weight: 600; }
 
     /* ── NAV TABS ── */
-    .tab-bar {
-      position: relative; z-index: 10;
-      background: rgba(10,14,26,0.92);
-      backdrop-filter: blur(10px);
+    .tab-bar-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,14,26,0.94);
+      backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
-      padding: 0 40px;
+      padding: 10px 40px;
+    }
+    .tab-bar {
       display: flex;
-      gap: 4px;
+      gap: 8px;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
       overflow-x: auto;
+      scrollbar-width: none; /* Firefox: completely hide scrollbar */
+      -ms-overflow-style: none; /* IE/Edge */
+    }
+    .tab-bar::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera: completely hide scrollbar */
+      width: 0;
+      height: 0;
     }
     .tab-btn {
-      background: none;
-      border: none;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
       color: var(--text-secondary);
       font-family: 'Inter', sans-serif;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 500;
-      padding: 14px 18px;
+      padding: 8px 15px;
+      border-radius: 10px;
       cursor: pointer;
       position: relative;
       white-space: nowrap;
-      transition: color 0.2s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
     }
-    .tab-btn::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--accent-blue);
-      transform: scaleX(0);
-      transition: transform 0.2s;
-      border-radius: 2px 2px 0 0;
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--border-bright);
+      transform: translateY(-1px);
     }
-    .tab-btn:hover { color: var(--text-primary); }
-    .tab-btn.active { color: var(--accent-blue); }
-    .tab-btn.active::after { transform: scaleX(1); }
+    .tab-btn.active {
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(79,156,249,0.22), rgba(167,139,250,0.18));
+      border-color: rgba(79,156,249,0.55);
+      box-shadow: 0 2px 14px rgba(79,156,249,0.25);
+      font-weight: 600;
+    }
 
     /* ── MAIN CONTENT ── */
     main {
@@ -530,7 +549,7 @@
       .grid-4, .grid-3, .grid-2, .grid-2-1, .grid-1-2 { grid-template-columns: 1fr; }
       .stat-grid { grid-template-columns: repeat(2, 1fr); }
       header { padding: 16px 20px; }
-      .tab-bar { padding: 0 20px; }
+      .tab-bar-wrapper { padding: 8px 16px; }
     }
     @media (max-width: 600px) {
       .pipeline-grid { grid-template-columns: 1fr; }
@@ -581,15 +600,17 @@
 </header>
 
 <!-- ══════════════════════ TABS ══════════════════════ -->
-<div class="tab-bar">
-  <button class="tab-btn active" id="tab-overview" onclick="switchTab('overview')">📊 Overview</button>
-  <button class="tab-btn"        id="tab-eda"      onclick="switchTab('eda')">🔬 EDA & Insights</button>
-  <button class="tab-btn"        id="tab-prep"     onclick="switchTab('prep')">⚙️ Preprocessing & Pipeline</button>
-  <button class="tab-btn"        id="tab-metrics"  onclick="switchTab('metrics')">📈 Metrics Comparison</button>
-  <button class="tab-btn"        id="tab-features" onclick="switchTab('features')">🔍 Feature Importance</button>
-  <button class="tab-btn"        id="tab-cv"       onclick="switchTab('cv')">🔄 Cross-Validation</button>
-  <button class="tab-btn"        id="tab-details"  onclick="switchTab('details')">📋 Model Specs</button>
-  <button class="tab-btn"        id="tab-verdict"  onclick="switchTab('verdict')">🏆 Final Verdict</button>
+<div class="tab-bar-wrapper">
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-overview" onclick="switchTab('overview')">📊 Overview</button>
+    <button class="tab-btn"        id="tab-eda"      onclick="switchTab('eda')">🔬 EDA & Insights</button>
+    <button class="tab-btn"        id="tab-prep"     onclick="switchTab('prep')">⚙️ Preprocessing</button>
+    <button class="tab-btn"        id="tab-metrics"  onclick="switchTab('metrics')">📈 Metrics</button>
+    <button class="tab-btn"        id="tab-features" onclick="switchTab('features')">🔍 Features</button>
+    <button class="tab-btn"        id="tab-cv"       onclick="switchTab('cv')">🔄 Cross-Val</button>
+    <button class="tab-btn"        id="tab-details"  onclick="switchTab('details')">📋 Model Specs</button>
+    <button class="tab-btn"        id="tab-verdict"  onclick="switchTab('verdict')">🏆 Final Verdict</button>
+  </div>
 </div>
 
 <!-- ══════════════════════ MAIN ══════════════════════ -->
