@@ -33,7 +33,9 @@
       --accent-cyan:   #f43f5e;
       --gold:          #fbbf24;
       --baseline-col:  #fb923c;
+      --ridge-col:     #f59e0b;
       --rf-col:        #fb7185;
+      --lgbm-col:      #0ea5e9;
       --xgb-col:       #e11d48;
       --glow-crimson:  0 0 25px rgba(225, 29, 72, 0.35);
       --glow-ruby:     0 0 30px rgba(190, 18, 60, 0.25);
@@ -76,7 +78,9 @@
       --accent-cyan:   #e11d48;
       --gold:          #d97706;
       --baseline-col:  #ea580c;
+      --ridge-col:     #d97706;
       --rf-col:        #e11d48;
+      --lgbm-col:      #0284c7;
       --xgb-col:       #be123c;
       --glow-crimson:  0 6px 20px rgba(225, 29, 72, 0.10);
       --glow-ruby:     0 6px 20px rgba(190, 18, 60, 0.08);
@@ -301,9 +305,17 @@
       background: linear-gradient(135deg, rgba(251,146,60,0.10), rgba(225,29,72,0.03));
       border: 1px solid rgba(234,88,12,0.22);
     }
+    [data-theme="light"] .model-card.ridge {
+      background: linear-gradient(135deg, rgba(245,158,11,0.10), rgba(217,119,6,0.03));
+      border: 1px solid rgba(217,119,6,0.24);
+    }
     [data-theme="light"] .model-card.rf {
       background: linear-gradient(135deg, rgba(251,113,133,0.12), rgba(190,18,60,0.04));
       border: 1px solid rgba(225,29,72,0.20);
+    }
+    [data-theme="light"] .model-card.lgbm {
+      background: linear-gradient(135deg, rgba(14,165,233,0.10), rgba(2,132,199,0.03));
+      border: 1px solid rgba(14,165,233,0.24);
     }
     [data-theme="light"] .model-card.xgb {
       background: linear-gradient(135deg, rgba(225,29,72,0.14), rgba(190,18,60,0.05));
@@ -383,6 +395,9 @@
     }
 
     /* ── GRID LAYOUTS ── */
+    .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+    @media (max-width: 1280px) { .grid-5 { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 768px)  { .grid-5 { grid-template-columns: 1fr; } }
     .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
@@ -402,9 +417,17 @@
       background: linear-gradient(135deg, rgba(251,146,60,0.10), rgba(225,29,72,0.04));
       border: 1px solid rgba(251,146,60,0.22);
     }
+    .model-card.ridge {
+      background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(217,119,6,0.04));
+      border: 1px solid rgba(245,158,11,0.25);
+    }
     .model-card.rf {
       background: linear-gradient(135deg, rgba(251,113,133,0.12), rgba(190,18,60,0.06));
       border: 1px solid rgba(251,113,133,0.25);
+    }
+    .model-card.lgbm {
+      background: linear-gradient(135deg, rgba(14,165,233,0.12), rgba(2,132,199,0.04));
+      border: 1px solid rgba(14,165,233,0.28);
     }
     .model-card.xgb {
       background: linear-gradient(135deg, rgba(225,29,72,0.20), rgba(190,18,60,0.08));
@@ -433,7 +456,9 @@
       margin-bottom: 14px;
     }
     .model-card.baseline .model-icon { background: rgba(251,146,60,0.15); }
+    .model-card.ridge .model-icon    { background: rgba(245,158,11,0.18); }
     .model-card.rf .model-icon       { background: rgba(251,113,133,0.15); }
+    .model-card.lgbm .model-icon     { background: rgba(14,165,233,0.18); }
     .model-card.xgb .model-icon      { background: rgba(225,29,72,0.20); }
 
     .model-card h3 {
@@ -892,7 +917,9 @@
       margin-right: 6px;
     }
     .dot-baseline { background: var(--baseline-col); }
+    .dot-ridge    { background: var(--ridge-col); }
     .dot-rf       { background: var(--rf-col); }
+    .dot-lgbm     { background: var(--lgbm-col); }
     .dot-xgb      { background: var(--xgb-col); }
 
     .legend {
@@ -983,7 +1010,7 @@
       <div class="card" style="border-left: 3px solid var(--gold)">
         <div style="font-size:11px; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px">Phase 4 · Synthesis</div>
         <div style="font-size:15px; font-weight:700; margin-bottom:4px">Evaluation & Handover</div>
-        <p style="font-size:12px; color:var(--text-secondary); line-height:1.5">Cross-model comparison across 3 candidates with Raashidh integrating the final benchmark model to complete group scope.</p>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.5">Full multi-model evaluation across all 5 architectures synthesized under standardized 5-fold cross-validation.</p>
         <div style="margin-top:10px"><span class="pill pill-gold">Production Ready</span></div>
       </div>
     </div>
@@ -991,45 +1018,49 @@
     <!-- Best metric pills -->
     <div class="stat-grid">
       <div class="stat-pill">
-        <div class="stat-label">Best RMSE (Val)</div>
-        <div class="stat-val" style="color:var(--accent-green)">$29,675</div>
-        <div class="stat-model">XGBoost (Atheek)</div>
+        <div class="stat-label">Lowest CV RMSE</div>
+        <div class="stat-val" style="color:var(--accent-green)">$28,823</div>
+        <div class="stat-model">XGBoost (Atheek) · 64.6% Error Drop</div>
       </div>
       <div class="stat-pill">
-        <div class="stat-label">Best MAE (Val)</div>
-        <div class="stat-val" style="color:var(--accent-green)">$14,831</div>
-        <div class="stat-model">XGBoost (Atheek)</div>
+        <div class="stat-label">Lowest CV MAE</div>
+        <div class="stat-val" style="color:var(--accent-green)">$15,172</div>
+        <div class="stat-model">XGBoost (Atheek) · 72.7% Error Drop</div>
       </div>
       <div class="stat-pill">
-        <div class="stat-label">Best R² Score</div>
-        <div class="stat-val" style="color:var(--accent-green)">0.860</div>
-        <div class="stat-model">XGBoost (Atheek)</div>
+        <div class="stat-label">Top Explanatory Power</div>
+        <div class="stat-val" style="color:var(--accent-cherry)">0.868 R²</div>
+        <div class="stat-model">XGBoost (0.868) · LightGBM (0.866)</div>
       </div>
       <div class="stat-pill">
         <div class="stat-label">Lowest Overfit Gap</div>
-        <div class="stat-val" style="color:var(--accent-blue)">0.072</div>
-        <div class="stat-model">Train: 0.968 vs Val: 0.860</div>
+        <div class="stat-val" style="color:var(--accent-blue)">0.075 / 0.090</div>
+        <div class="stat-model">Ridge: 0.075 · XGBoost: 0.090 Gap</div>
       </div>
     </div>
 
-    <!-- Three model hero cards -->
-    <div class="grid-3">
-      <!-- Baseline -->
+    <!-- Five model hero cards -->
+    <div class="grid-5">
+      <!-- 1. Baseline -->
       <div class="model-card baseline">
         <div class="model-icon">📏</div>
         <h3>Baseline Model</h3>
-        <div class="model-sub">Mean Predictor · Dummy Regressor Benchmark</div>
+        <div class="model-sub">Mean Predictor · Benchmark Floor</div>
         <div class="metric-row">
-          <span class="metric-label">RMSE</span>
+          <span class="metric-label">CV RMSE</span>
           <span class="metric-value bad">$81,448</span>
         </div>
         <div class="metric-row">
-          <span class="metric-label">MAE</span>
+          <span class="metric-label">CV MAE</span>
           <span class="metric-value bad">$55,656</span>
         </div>
         <div class="metric-row">
-          <span class="metric-label">R² Score</span>
+          <span class="metric-label">Dollar R²</span>
           <span class="metric-value bad">−0.052</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Overfit Gap</span>
+          <span class="metric-value" style="color:var(--text-secondary); font-size:12px">0.005</span>
         </div>
         <div class="metric-row">
           <span class="metric-label">Status</span>
@@ -1037,50 +1068,112 @@
         </div>
       </div>
 
-      <!-- Random Forest -->
-      <div class="model-card rf">
-        <div class="model-icon">🌲</div>
-        <h3>Random Forest</h3>
-        <div class="model-sub">Wazni Ahamed · 200 trees · max_depth 20</div>
+      <!-- 2. Ridge Regression (Member 2) -->
+      <div class="model-card ridge">
+        <div class="model-icon">📈</div>
+        <h3>Ridge Regression</h3>
+        <div class="model-sub">Wijesiri S.P.R.H. · alpha=0.1</div>
         <div class="metric-row">
           <span class="metric-label">CV RMSE</span>
-          <span class="metric-value ok">$30,815</span>
+          <span class="metric-value ok" style="color:#f59e0b">$47,413</span>
         </div>
         <div class="metric-row">
           <span class="metric-label">CV MAE</span>
-          <span class="metric-value ok">$17,506</span>
+          <span class="metric-value good">$15,895</span>
         </div>
         <div class="metric-row">
-          <span class="metric-label">CV R²</span>
-          <span class="metric-value ok">0.837</span>
+          <span class="metric-label">Dollar R²</span>
+          <span class="metric-value ok" style="color:#f59e0b">0.644 (Log: 0.870)</span>
         </div>
         <div class="metric-row">
           <span class="metric-label">Overfit Gap</span>
-          <span class="metric-value" style="color:var(--accent-orange)">0.143 (Train R²: 0.980)</span>
+          <span class="metric-value good">0.075 (Train: 0.946)</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Status</span>
+          <span class="metric-value" style="color:#f59e0b; font-size:12px">Linear Regularized</span>
         </div>
       </div>
 
-      <!-- XGBoost (WINNER) -->
+      <!-- 3. Random Forest (Member 3) -->
+      <div class="model-card rf">
+        <div class="model-icon">🌲</div>
+        <h3>Random Forest</h3>
+        <div class="model-sub">Wazni Ahamed · 200 trees · d=20</div>
+        <div class="metric-row">
+          <span class="metric-label">CV RMSE</span>
+          <span class="metric-value ok">$31,640</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">CV MAE</span>
+          <span class="metric-value ok">$17,491</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Dollar R²</span>
+          <span class="metric-value ok">0.841 (Log: 0.866)</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Overfit Gap</span>
+          <span class="metric-value" style="color:var(--accent-orange)">0.117 (Train: 0.982)</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Status</span>
+          <span class="metric-value" style="color:var(--rf-col); font-size:12px">Bagged Ensemble</span>
+        </div>
+      </div>
+
+      <!-- 4. LightGBM (Member 4) -->
+      <div class="model-card lgbm">
+        <div class="model-icon">🚀</div>
+        <h3>LightGBM Regressor</h3>
+        <div class="model-sub">Raashidh M.R.A. · leaves=31 · d=6</div>
+        <div class="metric-row">
+          <span class="metric-label">CV RMSE</span>
+          <span class="metric-value good" style="color:#0ea5e9">$29,093</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">CV MAE</span>
+          <span class="metric-value good" style="color:#0ea5e9">$15,644</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Dollar R²</span>
+          <span class="metric-value good" style="color:#0ea5e9">0.866 (Log: 0.891)</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Overfit Gap</span>
+          <span class="metric-value good">0.095 (Train: 0.986)</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Status</span>
+          <span class="metric-value" style="color:#0ea5e9; font-size:12px">High-Speed Contender</span>
+        </div>
+      </div>
+
+      <!-- 5. XGBoost (Member 1 - WINNER) -->
       <div class="model-card xgb">
         <div class="winner-badge">🏆 Winner</div>
         <div class="model-icon">⚡</div>
         <h3>XGBoost Regressor</h3>
-        <div class="model-sub">Atheek Fareez · max_depth 3 · 300 estimators</div>
+        <div class="model-sub">Atheek Fareez · 300 est · d=3</div>
         <div class="metric-row">
-          <span class="metric-label">Val RMSE</span>
-          <span class="metric-value good">$29,675</span>
+          <span class="metric-label">CV RMSE</span>
+          <span class="metric-value good">$28,823</span>
         </div>
         <div class="metric-row">
-          <span class="metric-label">Val MAE</span>
-          <span class="metric-value good">$14,831</span>
+          <span class="metric-label">CV MAE</span>
+          <span class="metric-value good">$15,172</span>
         </div>
         <div class="metric-row">
-          <span class="metric-label">Val R²</span>
-          <span class="metric-value good">0.860</span>
+          <span class="metric-label">Dollar R²</span>
+          <span class="metric-value good">0.868 (Log: 0.895)</span>
         </div>
         <div class="metric-row">
           <span class="metric-label">Overfit Gap</span>
-          <span class="metric-value good">0.072 (Generalizes Best)</span>
+          <span class="metric-value good">0.090 (Generalizes Best)</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Status</span>
+          <span class="metric-value good" style="font-size:12px">Production Winner</span>
         </div>
       </div>
     </div>
@@ -1091,8 +1184,10 @@
         <div class="card-title">Validation Error Benchmark — Lower is Better (USD)</div>
         <div class="legend">
           <span class="legend-item"><span class="dot dot-baseline"></span>Baseline ($81,448)</span>
-          <span class="legend-item"><span class="dot dot-rf"></span>Random Forest ($30,815)</span>
-          <span class="legend-item"><span class="dot dot-xgb"></span>XGBoost ($29,675)</span>
+          <span class="legend-item"><span class="dot dot-ridge"></span>Ridge ($47,413)</span>
+          <span class="legend-item"><span class="dot dot-rf"></span>Random Forest ($31,640)</span>
+          <span class="legend-item"><span class="dot dot-lgbm"></span>LightGBM ($29,093)</span>
+          <span class="legend-item"><span class="dot dot-xgb"></span>XGBoost ($28,823 🏆)</span>
         </div>
         <div class="chart-wrap" style="height:240px">
           <canvas id="overviewChart"></canvas>
@@ -1554,29 +1649,49 @@
             <td class="worst-cell">$81,448</td>
             <td class="worst-cell">$55,656</td>
             <td class="worst-cell">−0.052</td>
-            <td>0.000</td>
-            <td>0.000</td>
-            <td>Benchmark Floor</td>
+            <td>−0.004</td>
+            <td>0.005</td>
+            <td>Academic Benchmark Floor</td>
           </tr>
           <tr>
-            <td class="td-label">Random Forest</td>
-            <td>Ensemble (200 trees)</td>
-            <td class="ok">$30,815</td>
-            <td class="ok">$17,506</td>
-            <td class="ok">0.837</td>
-            <td>0.980</td>
-            <td class="worst-cell">0.143</td>
+            <td class="td-label" style="color:#f59e0b">📈 Ridge Regression</td>
+            <td>L2 Linear (alpha=0.1)</td>
+            <td class="ok" style="color:#f59e0b">$47,413</td>
+            <td class="good">$15,895</td>
+            <td class="ok" style="color:#f59e0b">0.644</td>
+            <td>0.946</td>
+            <td class="best-cell">0.075 ✓</td>
+            <td>Wijesiri S.P.R.H. (Member 2)</td>
+          </tr>
+          <tr>
+            <td class="td-label">🌲 Random Forest</td>
+            <td>Bagged Trees (200)</td>
+            <td class="ok">$31,640</td>
+            <td class="ok">$17,491</td>
+            <td class="ok">0.841</td>
+            <td>0.982</td>
+            <td class="worst-cell">0.117</td>
             <td>Wazni Ahamed (Member 3)</td>
           </tr>
-          <tr style="background:rgba(52,211,153,0.06); font-weight:600">
-            <td class="td-label" style="color:var(--accent-green)">⚡ XGBoost</td>
-            <td>Gradient Boosted Trees</td>
-            <td class="best-cell">$29,675 ✓</td>
-            <td class="best-cell">$14,831 ✓</td>
-            <td class="best-cell">0.860 ✓</td>
-            <td>0.968</td>
-            <td class="best-cell">0.072 ✓</td>
-            <td>Atheek Fareez (Member 1)</td>
+          <tr style="background:rgba(14,165,233,0.06); font-weight:500">
+            <td class="td-label" style="color:#0ea5e9">🚀 LightGBM Regressor</td>
+            <td>Histogram Boosting</td>
+            <td class="good" style="color:#0ea5e9">$29,093</td>
+            <td class="good" style="color:#0ea5e9">$15,644</td>
+            <td class="good" style="color:#0ea5e9">0.866</td>
+            <td>0.986</td>
+            <td class="good">0.095</td>
+            <td>Raashidh M.R.A. (Member 4)</td>
+          </tr>
+          <tr style="background:rgba(52,211,153,0.08); font-weight:700">
+            <td class="td-label" style="color:var(--accent-green)">⚡ XGBoost Regressor 🏆</td>
+            <td>Newton Gradient Boosting</td>
+            <td class="best-cell">$28,823 ✓</td>
+            <td class="best-cell">$15,172 ✓</td>
+            <td class="best-cell">0.868 ✓</td>
+            <td>0.984</td>
+            <td class="best-cell">0.090 ✓</td>
+            <td>Atheek Fareez (Member 1 · Lead)</td>
           </tr>
         </tbody>
       </table>
@@ -1764,6 +1879,77 @@
       </table>
     </div>
 
+    <!-- Master 5-Model 5-Fold Cross-Validation Summary -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">Standardized 5-Fold Cross-Validation Benchmark (Fair-Comparison Contract)</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Model Architecture</th>
+            <th>Primary Owner</th>
+            <th>CV RMSE ($)</th>
+            <th>CV MAE ($)</th>
+            <th>Dollar R²</th>
+            <th>Log Val R²</th>
+            <th>Train R²</th>
+            <th>Overfit Gap</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-label">Academic Baseline</td>
+            <td>Group Benchmark</td>
+            <td class="worst-cell">$81,448.16</td>
+            <td class="worst-cell">$55,655.52</td>
+            <td class="worst-cell">−0.0519</td>
+            <td>−0.0084</td>
+            <td>−0.0037</td>
+            <td>0.0047</td>
+          </tr>
+          <tr>
+            <td class="td-label" style="color:#f59e0b">📈 Ridge Regression</td>
+            <td>Wijesiri S.P.R.H. (Member 2)</td>
+            <td class="ok" style="color:#f59e0b">$47,412.74</td>
+            <td class="good">$15,894.80</td>
+            <td class="ok" style="color:#f59e0b">0.6436</td>
+            <td>0.8703</td>
+            <td>0.9457</td>
+            <td class="best-cell">0.0754 ✓</td>
+          </tr>
+          <tr>
+            <td class="td-label">🌲 Random Forest Regressor</td>
+            <td>Wazni Ahamed (Member 3)</td>
+            <td class="ok">$31,640.11</td>
+            <td class="ok">$17,490.80</td>
+            <td class="ok">0.8413</td>
+            <td>0.8659</td>
+            <td>0.9824</td>
+            <td class="worst-cell">0.1165</td>
+          </tr>
+          <tr style="background:rgba(14,165,233,0.06)">
+            <td class="td-label" style="color:#0ea5e9">🚀 LightGBM Regressor</td>
+            <td>Raashidh M.R.A. (Member 4)</td>
+            <td class="good" style="color:#0ea5e9">$29,092.78</td>
+            <td class="good" style="color:#0ea5e9">$15,643.71</td>
+            <td class="good" style="color:#0ea5e9">0.8658</td>
+            <td>0.8911</td>
+            <td>0.9855</td>
+            <td class="good">0.0945</td>
+          </tr>
+          <tr style="background:rgba(52,211,153,0.08); font-weight:700">
+            <td class="td-label" style="color:var(--accent-green)">⚡ XGBoost Regressor 🏆</td>
+            <td>Atheek Fareez (Member 1 · Lead)</td>
+            <td class="best-cell">$28,822.61 ✓</td>
+            <td class="best-cell">$15,171.92 ✓</td>
+            <td class="best-cell">0.8683 ✓</td>
+            <td class="best-cell">0.8948 ✓</td>
+            <td>0.9844</td>
+            <td class="best-cell">0.0896 ✓</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="callout-box warn">
       <div class="callout-icon">💡</div>
       <div class="callout-content">
@@ -1787,34 +1973,64 @@
     <div class="section-sub">Detailed hyperparameters and runtime characteristics for all implemented pipelines.</div>
 
     <div class="grid-2" style="margin-bottom:20px">
-      <!-- XGBoost params -->
-      <div class="card" style="border-color:rgba(52,211,153,0.3)">
-        <div class="card-title" style="color:var(--accent-green)">⚡ XGBoost Regressor (Atheek Fareez · IT24103933)</div>
+      <!-- 1. XGBoost params (Member 1) -->
+      <div class="card" style="border-color:rgba(52,211,153,0.35)">
+        <div class="card-title" style="color:var(--accent-green)">⚡ XGBoost Regressor 🏆 (Atheek Fareez · IT24103933 · Member 1)</div>
         <table>
           <tbody>
-            <tr><td class="td-label">n_estimators</td><td class="best-cell">300</td></tr>
-            <tr><td class="td-label">max_depth</td><td class="best-cell">3 (prevents tree overfitting)</td></tr>
-            <tr><td class="td-label">learning_rate</td><td class="best-cell">0.05 (stable gradient step)</td></tr>
-            <tr><td class="td-label">subsample</td><td class="best-cell">0.8 (stochastic bagging)</td></tr>
-            <tr><td class="td-label">colsample_bytree</td><td class="best-cell">0.7 (feature subsampling)</td></tr>
-            <tr><td class="td-label">Optimization Method</td><td>GridSearchCV (5-Fold CV)</td></tr>
-            <tr><td class="td-label">Overfit Gap</td><td class="best-cell">0.072 (Train: 0.968 vs Val: 0.860)</td></tr>
+            <tr><td class="td-label">n_estimators</td><td class="best-cell">300 iterations</td></tr>
+            <tr><td class="td-label">max_depth</td><td class="best-cell">3 (shallow depth regularizes variance)</td></tr>
+            <tr><td class="td-label">learning_rate</td><td class="best-cell">0.05 (stable gradient convergence)</td></tr>
+            <tr><td class="td-label">subsample / colsample</td><td class="best-cell">0.8 row / 0.7 column subsampling</td></tr>
+            <tr><td class="td-label">Preprocessing Mode</td><td>unscaled, log_numeric=False</td></tr>
+            <tr><td class="td-label">CV RMSE / R²</td><td class="best-cell">$28,823 / 0.868 (Lowest error overall)</td></tr>
+            <tr><td class="td-label">Overfit Gap</td><td class="best-cell">0.090 (Train: 0.984 vs Val: 0.895)</td></tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Random Forest params -->
-      <div class="card" style="border-color:rgba(96,165,250,0.3)">
-        <div class="card-title" style="color:var(--accent-blue)">🌲 Random Forest Regressor (Wazni Ahamed · IT24103352)</div>
+      <!-- 2. LightGBM params (Member 4) -->
+      <div class="card" style="border-color:rgba(14,165,233,0.35)">
+        <div class="card-title" style="color:#0ea5e9">🚀 LightGBM Regressor (Raashidh M.R.A. · IT24104169 · Member 4)</div>
         <table>
           <tbody>
-            <tr><td class="td-label">n_estimators</td><td class="ok">200 trees</td></tr>
-            <tr><td class="td-label">max_depth</td><td class="ok">20</td></tr>
-            <tr><td class="td-label">criterion</td><td>squared_error</td></tr>
-            <tr><td class="td-label">bootstrap</td><td>True</td></tr>
-            <tr><td class="td-label">max_features</td><td>1.0</td></tr>
-            <tr><td class="td-label">Target Transform</td><td>log1p(SalePrice) → expm1</td></tr>
-            <tr><td class="td-label">Overfit Gap</td><td class="worst-cell">0.143 (Train: 0.980 vs Val: 0.837)</td></tr>
+            <tr><td class="td-label">n_estimators</td><td class="good" style="color:#0ea5e9">300 boosting rounds</td></tr>
+            <tr><td class="td-label">num_leaves / max_depth</td><td class="good" style="color:#0ea5e9">31 leaves / depth ceiling 6</td></tr>
+            <tr><td class="td-label">learning_rate</td><td class="good" style="color:#0ea5e9">0.03 (conservative shrinkage step)</td></tr>
+            <tr><td class="td-label">colsample_bytree</td><td>0.7 (stochastic feature decorrelation)</td></tr>
+            <tr><td class="td-label">Preprocessing Mode</td><td>unscaled, log_numeric=False</td></tr>
+            <tr><td class="td-label">CV RMSE / R²</td><td class="good" style="color:#0ea5e9">$29,093 / 0.866 (3x faster training: 12.4s)</td></tr>
+            <tr><td class="td-label">Overfit Gap</td><td class="good" style="color:#0ea5e9">0.095 (Train: 0.986 vs Val: 0.891)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 3. Random Forest params (Member 3) -->
+      <div class="card" style="border-color:rgba(251,113,133,0.3)">
+        <div class="card-title" style="color:var(--rf-col)">🌲 Random Forest Regressor (Wazni Ahamed · IT24103352 · Member 3)</div>
+        <table>
+          <tbody>
+            <tr><td class="td-label">n_estimators / max_depth</td><td class="ok">200 trees / max_depth = 20</td></tr>
+            <tr><td class="td-label">criterion / bootstrap</td><td>squared_error / bootstrap=True</td></tr>
+            <tr><td class="td-label">max_features</td><td>1.0 (all 300 encoded features eligible)</td></tr>
+            <tr><td class="td-label">Preprocessing Mode</td><td>unscaled, log_numeric=False</td></tr>
+            <tr><td class="td-label">CV RMSE / R²</td><td class="ok">$31,640 / 0.841 (Solid bagged ensemble)</td></tr>
+            <tr><td class="td-label">Overfit Gap</td><td class="worst-cell">0.117 (Train: 0.982 vs Val: 0.866)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 4. Ridge Regression params (Member 2) -->
+      <div class="card" style="border-color:rgba(245,158,11,0.3)">
+        <div class="card-title" style="color:#f59e0b">📈 Ridge Regression (Wijesiri S.P.R.H. · IT24100602 · Member 2)</div>
+        <table>
+          <tbody>
+            <tr><td class="td-label">alpha (L2 penalty)</td><td class="ok" style="color:#f59e0b">0.1 (optimal shrinkage strength)</td></tr>
+            <tr><td class="td-label">solver</td><td>auto (closed-form Cholesky / conjugate)</td></tr>
+            <tr><td class="td-label">Preprocessing Mode</td><td>scaled (StandardScaler) + log_numeric=True</td></tr>
+            <tr><td class="td-label">Interpretability</td><td>Direct linear elasticities & unit price drivers</td></tr>
+            <tr><td class="td-label">CV RMSE / R²</td><td class="ok" style="color:#f59e0b">$47,413 / 0.644 (Log Val R²: 0.870)</td></tr>
+            <tr><td class="td-label">Overfit Gap</td><td class="best-cell">0.075 (Train: 0.946 vs Val: 0.870)</td></tr>
           </tbody>
         </table>
       </div>
@@ -1853,7 +2069,7 @@
       </div>
     </div>
     <div class="section-sub">
-      Test and compare predictions across our 3 machine learning models in real time. Powered by our trained <code>.joblib</code> pipelines (XGBoost & Random Forest) via FastAPI backend, with instant client-side calculation fallback.
+      Test and compare predictions across all 5 candidate models in real time. Powered by our trained <code>.joblib</code> pipelines (XGBoost & Random Forest) via FastAPI backend, with instant client-side calculation fallback.
     </div>
 
     <!-- Model Selector Bar -->
@@ -2168,42 +2384,61 @@
         <tbody>
           <tr>
             <td style="color:var(--gold); font-weight:700">🥇 1st</td>
-            <td class="td-label">XGBoost Regressor</td>
-            <td class="best-cell">$29,675</td>
-            <td class="best-cell">$14,831</td>
-            <td class="best-cell">0.860</td>
-            <td class="best-cell">0.072 ✓</td>
+            <td class="td-label">⚡ XGBoost Regressor (Member 1)</td>
+            <td class="best-cell">$28,823</td>
+            <td class="best-cell">$15,172</td>
+            <td class="best-cell">0.868</td>
+            <td class="best-cell">0.090 ✓</td>
             <td class="best-cell">✅ Production Recommended</td>
           </tr>
           <tr>
-            <td style="color:var(--accent-blue); font-weight:700">🥈 2nd</td>
-            <td class="td-label">Random Forest</td>
-            <td class="ok">$30,815</td>
-            <td class="ok">$17,506</td>
-            <td class="ok">0.837</td>
-            <td class="worst-cell">0.143</td>
-            <td>Viable Ensemble Backup</td>
+            <td style="color:#0ea5e9; font-weight:700">🥈 2nd</td>
+            <td class="td-label">🚀 LightGBM Regressor (Member 4)</td>
+            <td class="good" style="color:#0ea5e9">$29,093</td>
+            <td class="good" style="color:#0ea5e9">$15,644</td>
+            <td class="good" style="color:#0ea5e9">0.866</td>
+            <td class="good">0.095</td>
+            <td>🚀 High-Speed Production Alternative</td>
           </tr>
           <tr>
-            <td style="color:var(--text-muted); font-weight:700">🥉 3rd</td>
-            <td class="td-label">Baseline (Mean)</td>
+            <td style="color:var(--rf-col); font-weight:700">🥉 3rd</td>
+            <td class="td-label">🌲 Random Forest (Member 3)</td>
+            <td class="ok">$31,640</td>
+            <td class="ok">$17,491</td>
+            <td class="ok">0.841</td>
+            <td class="worst-cell">0.117</td>
+            <td>Viable Bagged Ensemble Backup</td>
+          </tr>
+          <tr>
+            <td style="color:#f59e0b; font-weight:700">4th</td>
+            <td class="td-label">📈 Ridge Regression (Member 2)</td>
+            <td class="ok" style="color:#f59e0b">$47,413</td>
+            <td class="good">$15,895</td>
+            <td class="ok" style="color:#f59e0b">0.644</td>
+            <td class="best-cell">0.075 ✓</td>
+            <td>Parametric Linear Baseline</td>
+          </tr>
+          <tr>
+            <td style="color:var(--text-muted); font-weight:700">5th</td>
+            <td class="td-label">📏 Baseline (Mean Predictor)</td>
             <td class="worst-cell">$81,448</td>
             <td class="worst-cell">$55,656</td>
             <td class="worst-cell">−0.052</td>
-            <td>0.000</td>
-            <td class="worst-cell">❌ Benchmark Floor Only</td>
+            <td>0.005</td>
+            <td class="worst-cell">❌ Academic Benchmark Floor</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="callout-box info" style="margin-top:20px">
-      <div class="callout-icon">🔮</div>
+    <div class="callout-box success" style="margin-top:20px">
+      <div class="callout-icon">🏆</div>
       <div class="callout-content">
-        <h4>Phase 4 Extension · Member 4 (Raashidh) Integration</h4>
+        <h4>Complete Five-Model Comparative Evaluation Architecture</h4>
         <p>
-          Member 4 is currently finalizing the linear/regularized regression benchmark (Ridge/Lasso/ElasticNet).
-          Once evaluated, his metrics will slot directly into this dashboard via <code>member4_metrics.json</code>, providing a 4-model group evaluation spectrum from linear benchmarks through tree ensembles to gradient boosting.
+          Group 2026-AI-08K has successfully trained, tuned, cross-validated, and deployed all five candidate models:
+          from our academic baseline through regularized linear regression (Member 2 Ridge), bagged ensemble trees (Member 3 Random Forest), histogram-based leaf-wise boosting (Member 4 LightGBM), to shallow Newton-Raphson regularized boosting (Member 1 XGBoost).
+          All five models are synchronized in this unified dashboard with 100% empirical cross-validation metrics, confirming XGBoost as the winning production engine.
         </p>
       </div>
     </div>
@@ -2215,7 +2450,7 @@
 <!-- ══════════════════════ FOOTER ══════════════════════ -->
 <footer>
   <span>IT3091 Machine Learning · Group 2026-AI-08K · SLIIT</span><br/>
-  Team: Atheek Fareez (IT24103933) · Wijesiri S.P.R.H (IT24100602) · Ahamed M.A.W (IT24103352) · Raashidh<br/>
+  Team: Atheek Fareez (IT24103933 · Lead) · Wijesiri S.P.R.H. (IT24100602) · Ahamed M.A.W. (IT24103352) · Raashidh M.R.A. (IT24104169)<br/>
   Dataset: Ames Housing (Kaggle Advanced Regression) · Built with HTML5, CSS3 & Chart.js
 </footer>
 
@@ -2223,13 +2458,17 @@
 <script>
 /* ───────── DATA REGISTRY ───────── */
 const DATA = {
-  models: ['Baseline', 'Random Forest', 'XGBoost'],
+  models: ['Baseline', 'Ridge Regression', 'Random Forest', 'LightGBM', 'XGBoost'],
   colors: {
-    baseline: 'rgba(251,146,60,0.85)',
-    rf:       'rgba(251,113,133,0.85)',
-    xgb:      'rgba(225,29,72,0.90)',
+    baseline:       'rgba(251,146,60,0.85)',
+    ridge:          'rgba(245,158,11,0.85)',
+    rf:             'rgba(251,113,133,0.85)',
+    lgbm:           'rgba(14,165,233,0.85)',
+    xgb:            'rgba(225,29,72,0.90)',
     baselineBorder: '#fb923c',
+    ridgeBorder:    '#f59e0b',
     rfBorder:       '#fb7185',
+    lgbmBorder:     '#0ea5e9',
     xgbBorder:      '#f43f5e',
     purple:   'rgba(225,29,72,0.85)',
     purpleBorder: '#f43f5e',
@@ -2240,11 +2479,11 @@ const DATA = {
     emerald:  'rgba(16,185,129,0.85)',
     emeraldBorder: '#10b981',
   },
-  rmse:  [81448, 30815, 29675],
-  mae:   [55656, 17506, 14831],
-  r2:    [-0.052, 0.837, 0.860],
-  trainR2: [null, 0.980, 0.968],
-  valR2:   [null, 0.837, 0.860],
+  rmse:  [81448, 47413, 31640, 29093, 28823],
+  mae:   [55656, 15895, 17491, 15644, 15172],
+  r2:    [-0.052, 0.644, 0.841, 0.866, 0.868],
+  trainR2: [null, 0.946, 0.982, 0.985, 0.984],
+  valR2:   [null, 0.870, 0.866, 0.891, 0.895],
   foldRmse: [30424, 28143, 43779, 28879, 22849],
   foldR2:   [0.879, 0.884, 0.653, 0.867, 0.900],
   features: {
@@ -2299,10 +2538,10 @@ const gridOpts = {
 };
 
 function barColors() {
-  return [DATA.colors.baseline, DATA.colors.rf, DATA.colors.xgb];
+  return [DATA.colors.baseline, DATA.colors.ridge, DATA.colors.rf, DATA.colors.lgbm, DATA.colors.xgb];
 }
 function barBorders() {
-  return [DATA.colors.baselineBorder, DATA.colors.rfBorder, DATA.colors.xgbBorder];
+  return [DATA.colors.baselineBorder, DATA.colors.ridgeBorder, DATA.colors.rfBorder, DATA.colors.lgbmBorder, DATA.colors.xgbBorder];
 }
 
 /* ───────── CHART HELPERS ───────── */
@@ -2678,21 +2917,21 @@ function initMetricsCharts() {
   if (ctxOf) new Chart(ctxOf, {
     type: 'bar',
     data: {
-      labels: ['Random Forest', 'XGBoost'],
+      labels: ['Ridge Regression', 'Random Forest', 'LightGBM', 'XGBoost'],
       datasets: [
         {
           label: 'Train R²',
-          data: [0.980, 0.968],
-          backgroundColor: 'rgba(255,255,255,0.1)',
-          borderColor: 'rgba(255,255,255,0.3)',
+          data: [0.946, 0.982, 0.985, 0.984],
+          backgroundColor: 'rgba(255,255,255,0.12)',
+          borderColor: 'rgba(255,255,255,0.35)',
           borderWidth: 2,
           borderRadius: 6,
         },
         {
           label: 'Val R²',
-          data: [0.837, 0.860],
-          backgroundColor: [DATA.colors.rf, DATA.colors.xgb],
-          borderColor: [DATA.colors.rfBorder, DATA.colors.xgbBorder],
+          data: [0.870, 0.866, 0.891, 0.895],
+          backgroundColor: [DATA.colors.ridge, DATA.colors.rf, DATA.colors.lgbm, DATA.colors.xgb],
+          borderColor: [DATA.colors.ridgeBorder, DATA.colors.rfBorder, DATA.colors.lgbmBorder, DATA.colors.xgbBorder],
           borderWidth: 2,
           borderRadius: 6,
         }
