@@ -58,10 +58,10 @@ IT3091-House-Price-Prediction/
 │
 ├── reports/
 │   ├── model_results/
-│   │   ├── member1_ridge_metrics.json
-│   │   ├── member2_rf_metrics.json
-│   │   ├── member3_lgbm_metrics.json
-│   │   ├── member4_xgb_metrics.json
+│   │   ├── member1_xgb_metrics.json
+│   │   ├── member2_ridge_metrics.json
+│   │   ├── member3_rf_metrics.json
+│   │   ├── member4_lgbm_metrics.json
 │   │   └── master_model_comparison_table.csv       <-- Combined results
 │   └── ...
 ```
@@ -164,22 +164,22 @@ cv = KFold(n_splits=5, shuffle=True, random_state=42)
 
 # 2. Define the 4 Team Models
 team_models = {
-    "Baseline (Member 1)": Pipeline([
+    "Baseline (Academic Benchmark)": Pipeline([
         ("reg", DummyRegressor(strategy="median"))
     ]),
-    "Ridge Regression (Member 1)": Pipeline([
+    "Ridge Regression (Member 2 - Wijesiri)": Pipeline([
         ("prep", build_preprocessor(configuration="scaled", log_numeric=True, sparse_output=False)),
-        ("reg", Ridge(alpha=10.0, random_state=42))
+        ("reg", Ridge(alpha=0.1, random_state=42))
     ]),
-    "Random Forest (Member 2)": Pipeline([
+    "Random Forest (Member 3 - Wazni Ahamed)": Pipeline([
         ("prep", build_preprocessor(configuration="unscaled", log_numeric=False, sparse_output=False)),
         ("reg", RandomForestRegressor(n_estimators=200, max_depth=16, random_state=42, n_jobs=-1))
     ]),
-    "LightGBM (Member 3)": Pipeline([
+    "LightGBM (Member 4 - Raashidh)": Pipeline([
         ("prep", build_preprocessor(configuration="unscaled", log_numeric=False, sparse_output=False)),
-        ("reg", LGBMRegressor(n_estimators=300, learning_rate=0.05, num_leaves=31, random_state=42))
+        ("reg", LGBMRegressor(n_estimators=300, learning_rate=0.03, num_leaves=31, colsample_bytree=0.7, random_state=42))
     ]),
-    "XGBoost (Member 4)": Pipeline([
+    "XGBoost (Member 1 - Atheek)": Pipeline([
         ("prep", build_preprocessor(configuration="unscaled", log_numeric=False, sparse_output=False)),
         ("reg", XGBRegressor(n_estimators=300, learning_rate=0.05, max_depth=4, random_state=42, n_jobs=-1))
     ])

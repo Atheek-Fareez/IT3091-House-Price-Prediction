@@ -1,0 +1,6 @@
+Model Name,Owner / Role,CV RMSE ($),CV MAE ($),Dollar R²,Validation R² (Log),Train R² (Log),Overfit Gap
+Baseline (Academic Benchmark),Academic Benchmark,81448.16,55655.52,-0.0519,-0.0084,-0.0037,0.0047
+Ridge Regression (Member 2),Member 2 (Wijesiri),47412.74,15894.8,0.6436,0.8703,0.9457,0.0754
+Random Forest (Member 3),Member 3 (Wazni Ahamed),31640.11,17490.8,0.8413,0.8659,0.9824,0.1165
+LightGBM Regressor (Member 4),Member 4 (Raashidh),29092.78,15643.71,0.8658,0.8911,0.9855,0.0945
+XGBoost Regressor (Member 1),Member 1 (Atheek),28822.61,15171.92,0.8683,0.8948,0.9844,0.0896

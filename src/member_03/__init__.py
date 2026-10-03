@@ -1,4 +1,2 @@
-"""Compatibility alias for Member 3 preprocessing package.
-Routes directly to src.member_03_wazni_ahamed.
-"""
+"""Compatibility stub for Member 03 package."""
 from src.member_03_wazni_ahamed import *

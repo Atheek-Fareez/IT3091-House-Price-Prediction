@@ -1,0 +1,32 @@
+{
+    "member": "Member 2 - Wijesiri S.P.R.H. (IT24100602)",
+    "model_name": "Ridge Regression",
+    "best_alpha": 0.1,
+    "baseline_benchmark": {
+        "rmse": 80701.60832828148,
+        "mae": 55655.36895262807,
+        "r2": -0.032657032756814086
+    },
+    "ridge_performance": {
+        "rmse": 47412.73760768816,
+        "mae": 15894.801546439845,
+        "dollar_r2": 0.6435638111165598,
+        "train_r2": 0.9456990098097278,
+        "validation_r2": 0.8703216188243086,
+        "overfit_gap": 0.07537739098541918
+    },
+    "top_positive_features": [
+        "nominal__RoofMatl_WdShngl",
+        "nominal__RoofMatl_Membran",
+        "nominal__Condition2_PosA",
+        "nominal__RoofMatl_Metal",
+        "indicators__MasonryConflict"
+    ],
+    "top_negative_features": [
+        "nominal__RoofMatl_ClyTile",
+        "nominal__Condition2_PosN",
+        "indicators__HasPool",
+        "nominal__MSZoning_C (all)",
+        "nominal__Exterior1st_BrkComm"
+    ]
+}

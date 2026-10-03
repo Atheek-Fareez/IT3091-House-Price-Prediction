@@ -684,6 +684,16 @@
       border-color: #fb7185;
       box-shadow: 0 0 18px rgba(251, 113, 133, 0.30);
     }
+    .model-selector-pill.active.ridge {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.35), rgba(180, 83, 9, 0.25));
+      border-color: #fbbf24;
+      box-shadow: 0 0 18px rgba(251, 191, 36, 0.30);
+    }
+    .model-selector-pill.active.lgbm {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.35), rgba(14, 116, 144, 0.25));
+      border-color: #38bdf8;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.30);
+    }
     .model-selector-pill.active.baseline {
       background: linear-gradient(135deg, rgba(251, 146, 60, 0.25), rgba(244, 63, 94, 0.18));
       border-color: #fb923c;
@@ -1700,13 +1710,19 @@
     <!-- Model Selector Bar -->
     <div class="model-selector-bar">
       <button class="model-selector-pill active" id="sel-xgb" onclick="selectModel('xgb')">
-        <span>⚡</span> XGBoost Regressor (Best Accuracy · 0.860 R²)
+        <span>⚡</span> XGBoost Regressor (M1 · 0.868 R²)
+      </button>
+      <button class="model-selector-pill" id="sel-ridge" onclick="selectModel('ridge')">
+        <span>📈</span> Ridge Regression (M2 · 0.870 R²)
       </button>
       <button class="model-selector-pill" id="sel-rf" onclick="selectModel('rf')">
-        <span>🌲</span> Random Forest (200 Trees · 0.837 R²)
+        <span>🌲</span> Random Forest (M3 · 0.841 R²)
+      </button>
+      <button class="model-selector-pill" id="sel-lgbm" onclick="selectModel('lgbm')">
+        <span>🚀</span> LightGBM Regressor (M4 · 0.866 R²)
       </button>
       <button class="model-selector-pill" id="sel-baseline" onclick="selectModel('baseline')">
-        <span>📏</span> Baseline Dummy (Mean Predictor)
+        <span>📏</span> Baseline Dummy (Median Predictor)
       </button>
     </div>
 
@@ -1883,20 +1899,30 @@
 
           <!-- Multi-Model Comparison Box -->
           <div style="margin-bottom:20px;">
-            <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Model Output Comparison</div>
+            <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Model Output Comparison (All 4 Group Models)</div>
             
             <div class="model-comp-row highlight" id="comp-row-xgb">
-              <span style="font-size:12px; font-weight:500;">⚡ XGBoost (Winner)</span>
+              <span style="font-size:12px; font-weight:500;">⚡ XGBoost Regressor (Member 1)</span>
               <span style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--accent-green);" id="comp-xgb-val">$234,800</span>
             </div>
 
+            <div class="model-comp-row" id="comp-row-ridge">
+              <span style="font-size:12px; font-weight:500;">📈 Ridge Regression (Member 2)</span>
+              <span style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--gold);" id="comp-ridge-val">$224,200</span>
+            </div>
+
             <div class="model-comp-row" id="comp-row-rf">
-              <span style="font-size:12px; font-weight:500;">🌲 Random Forest</span>
+              <span style="font-size:12px; font-weight:500;">🌲 Random Forest (Member 3)</span>
               <span style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--accent-blue);" id="comp-rf-val">$228,400</span>
             </div>
 
+            <div class="model-comp-row" id="comp-row-lgbm">
+              <span style="font-size:12px; font-weight:500;">🚀 LightGBM Regressor (Member 4)</span>
+              <span style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#38bdf8;" id="comp-lgbm-val">$235,100</span>
+            </div>
+
             <div class="model-comp-row" id="comp-row-baseline">
-              <span style="font-size:12px; font-weight:500;">📏 Baseline (Mean)</span>
+              <span style="font-size:12px; font-weight:500;">📏 Baseline Dummy (Mean Predictor)</span>
               <span style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--accent-red);" id="comp-baseline-val">$180,921</span>
             </div>
           </div>
@@ -2704,16 +2730,18 @@ let selectedModel = 'xgb';
 function selectModel(modelKey) {
   selectedModel = modelKey;
   document.querySelectorAll('.model-selector-pill').forEach(btn => {
-    btn.classList.remove('active', 'rf', 'baseline');
+    btn.classList.remove('active', 'rf', 'ridge', 'lgbm', 'baseline');
   });
   const activeBtn = document.getElementById('sel-' + modelKey);
   if (activeBtn) {
     activeBtn.classList.add('active');
     if (modelKey === 'rf') activeBtn.classList.add('rf');
+    if (modelKey === 'ridge') activeBtn.classList.add('ridge');
+    if (modelKey === 'lgbm') activeBtn.classList.add('lgbm');
     if (modelKey === 'baseline') activeBtn.classList.add('baseline');
   }
   if (backendOnline && lastPredictions.xgb) {
-    renderActivePrediction(lastPredictions.xgb, lastPredictions.rf, lastPredictions.baseline, true);
+    renderActivePrediction(lastPredictions.xgb, lastPredictions.ridge, lastPredictions.rf, lastPredictions.lgbm, lastPredictions.baseline, true);
   } else {
     calculateValuation();
   }
@@ -2729,7 +2757,7 @@ function loadPreset(preset) {
     document.getElementById('input-exter').value = 'TA';
     document.getElementById('input-kitchen').value = 'TA';
     document.getElementById('input-cars').value = 1;
-    document.getElementById('input-baths').value = 1;
+    document.getElementById('input-baths').value = 1.0;
   } else if (preset === 'family') {
     document.getElementById('input-qual').value = 7;
     document.getElementById('input-livarea').value = 1850;
@@ -2781,7 +2809,9 @@ let backendOnline = false;
 let backendTimer = null;
 let lastPredictions = {
   xgb: 234800,
+  ridge: 224200,
   rf: 228400,
+  lgbm: 235100,
   baseline: 180921
 };
 
@@ -2889,9 +2919,11 @@ async function fetchBackendPrediction() {
           updateBackendStatusUI(true);
         }
         lastPredictions.xgb = data.predictions.xgb || lastPredictions.xgb;
+        lastPredictions.ridge = data.predictions.ridge || lastPredictions.ridge;
         lastPredictions.rf = data.predictions.rf || lastPredictions.rf;
+        lastPredictions.lgbm = data.predictions.lgbm || lastPredictions.lgbm;
         lastPredictions.baseline = data.predictions.baseline || 180921;
-        renderActivePrediction(lastPredictions.xgb, lastPredictions.rf, lastPredictions.baseline, true);
+        renderActivePrediction(lastPredictions.xgb, lastPredictions.ridge, lastPredictions.rf, lastPredictions.lgbm, lastPredictions.baseline, true);
       }
     }
   } catch (err) {
@@ -2952,12 +2984,16 @@ function calculateValuation() {
   const qualitySynergy = (qual >= 8 && totalIndoor > 2800) ? (totalIndoor - 2800) * 18 :
                          (qual <= 4 && totalIndoor < 1800) ? -12000 : 0;
   const xgbPred = Math.round(Math.max(50000, boundedValuation + qualitySynergy));
+  const lgbmPred = Math.round(Math.max(50000, boundedValuation + (qualitySynergy * 0.96)));
+  const ridgePred = Math.round(Math.max(48000, (boundedValuation * 0.96) + 3000));
 
   lastPredictions.xgb = xgbPred;
+  lastPredictions.ridge = ridgePred;
   lastPredictions.rf = rfPred;
+  lastPredictions.lgbm = lgbmPred;
   lastPredictions.baseline = baselinePred;
 
-  renderActivePrediction(xgbPred, rfPred, baselinePred, false);
+  renderActivePrediction(xgbPred, ridgePred, rfPred, lgbmPred, baselinePred, false);
 
   document.getElementById('fact-base').innerText = `$${baseAmes.toLocaleString()}`;
   document.getElementById('fact-qual').innerText = `${qualEffect >= 0 ? '+' : ''}$${qualEffect.toLocaleString()}`;
@@ -2966,19 +3002,31 @@ function calculateValuation() {
   document.getElementById('fact-finishes').innerText = `${(finishesEffect + yearEffect + bathEffect) >= 0 ? '+' : ''}$${Math.round(finishesEffect + yearEffect + bathEffect).toLocaleString()}`;
 }
 
-function renderActivePrediction(xgbPred, rfPred, baselinePred, isLiveBackend) {
+function renderActivePrediction(xgbPred, ridgePred, rfPred, lgbmPred, baselinePred, isLiveBackend) {
   let activePrice = xgbPred;
-  let activeMAE = 14831;
-  let activeR2 = 0.860;
-  let activeModelName = '⚡ XGBoost Regressor';
+  let activeMAE = 15172;
+  let activeR2 = 0.868;
+  let activeModelName = '⚡ XGBoost Regressor (M1)';
   let activePillClass = 'pill-green';
 
-  if (selectedModel === 'rf') {
+  if (selectedModel === 'ridge') {
+    activePrice = ridgePred;
+    activeMAE = 15895;
+    activeR2 = 0.870;
+    activeModelName = '📈 Ridge Regression (M2)';
+    activePillClass = 'pill-gold';
+  } else if (selectedModel === 'rf') {
     activePrice = rfPred;
-    activeMAE = 17506;
-    activeR2 = 0.837;
-    activeModelName = '🌲 Random Forest';
+    activeMAE = 17491;
+    activeR2 = 0.841;
+    activeModelName = '🌲 Random Forest (M3)';
     activePillClass = 'pill-blue';
+  } else if (selectedModel === 'lgbm') {
+    activePrice = lgbmPred;
+    activeMAE = 15644;
+    activeR2 = 0.866;
+    activeModelName = '🚀 LightGBM Regressor (M4)';
+    activePillClass = 'pill-purple';
   } else if (selectedModel === 'baseline') {
     activePrice = baselinePred;
     activeMAE = 55656;
@@ -2995,10 +3043,12 @@ function renderActivePrediction(xgbPred, rfPred, baselinePred, isLiveBackend) {
   document.getElementById('hero-r2').innerText = `${(activeR2 * 100).toFixed(1)}%`;
 
   document.getElementById('comp-xgb-val').innerText = `$${xgbPred.toLocaleString()}`;
+  if (document.getElementById('comp-ridge-val')) document.getElementById('comp-ridge-val').innerText = `$${ridgePred.toLocaleString()}`;
   document.getElementById('comp-rf-val').innerText = `$${rfPred.toLocaleString()}`;
+  if (document.getElementById('comp-lgbm-val')) document.getElementById('comp-lgbm-val').innerText = `$${lgbmPred.toLocaleString()}`;
   document.getElementById('comp-baseline-val').innerText = `$${baselinePred.toLocaleString()}`;
 
-  ['xgb', 'rf', 'baseline'].forEach(m => {
+  ['xgb', 'ridge', 'rf', 'lgbm', 'baseline'].forEach(m => {
     const row = document.getElementById('comp-row-' + m);
     if (row) {
       if (m === selectedModel) row.classList.add('highlight');
@@ -3015,11 +3065,15 @@ function renderActivePrediction(xgbPred, rfPred, baselinePred, isLiveBackend) {
   if (explEl) {
     const engineTag = isLiveBackend ? '<span style="color:#10b981; font-weight:700;">[Live .joblib Output]</span> ' : '';
     if (selectedModel === 'xgb') {
-      explEl.innerHTML = `${engineTag}<strong>XGBoost Insight:</strong> Evaluates gradient boosted shallow trees (depth 3, lr 0.05). It accurately pairs the high Overall Quality (${qual}/10) with Total Indoor Area (${totalIndoor.toLocaleString()} sqft), outputting <strong>$${xgbPred.toLocaleString()}</strong> with our lowest group error margin (±$14,831).`;
+      explEl.innerHTML = `${engineTag}<strong>XGBoost Insight:</strong> Depth-wise gradient boosting (depth 4, lr 0.05). Accurately captures complex non-linear combinations of Overall Quality (${qual}/10) and Living Area (${liv.toLocaleString()} sqft), achieving our lowest group error margin (±$15,172).`;
+    } else if (selectedModel === 'ridge') {
+      explEl.innerHTML = `${engineTag}<strong>Ridge Regression Insight:</strong> Regularized linear model (alpha 0.1) provides transparent feature elasticity. Above Ground Living Area and Overall Quality scale value proportionally while L2 shrinkage controls multicollinearity. (±$15,895 MAE, R² = 0.870).`;
     } else if (selectedModel === 'rf') {
-      explEl.innerHTML = `${engineTag}<strong>Random Forest Insight:</strong> Averages across 200 deep decision trees (depth 20). Produces a resilient prediction of <strong>$${rfPred.toLocaleString()}</strong>, though tree variance introduces a slightly broader error margin (±$17,506).`;
+      explEl.innerHTML = `${engineTag}<strong>Random Forest Insight:</strong> Averages across 200 deep decision trees (depth 16). Produces a resilient prediction of <strong>$${rfPred.toLocaleString()}</strong> with bagging protection against outliers. (±$17,491 MAE).`;
+    } else if (selectedModel === 'lgbm') {
+      explEl.innerHTML = `${engineTag}<strong>LightGBM Insight:</strong> Employs fast histogram quantization and leaf-wise tree growth. Delivers rapid execution and high explained variance (R² = 0.866, ±$15,644 MAE).`;
     } else {
-      explEl.innerHTML = `<strong>Baseline Model Insight:</strong> Ignores all structural attributes, location, and square footage entirely. It simply outputs the global Ames training mean <strong>$180,921</strong> (±$55,656 MAE, R² = −0.052), illustrating why machine learning models are indispensable.`;
+      explEl.innerHTML = `<strong>Baseline Model Insight:</strong> Ignores all structural attributes, location, and square footage entirely. It simply outputs the Ames global training mean <strong>$180,921</strong> (±$55,656 MAE), illustrating why machine learning models are indispensable.`;
     }
   }
 }

@@ -115,7 +115,37 @@ def load_artifacts():
     else:
         print("[WARN] random_forest_model.joblib not found at expected path.")
 
-    # 3. Load baseline template row from raw Ames train.csv
+    # 3. Load Member 4 (Raashidh) LightGBM Pipeline
+    lgbm_path = ROOT / "notebooks/Member_04_Raashidh/lightgbm_model.joblib"
+    if not lgbm_path.exists():
+        alt_lgbm = ROOT / "lightgbm_model.joblib"
+        if alt_lgbm.exists():
+            lgbm_path = alt_lgbm
+    if lgbm_path.exists():
+        try:
+            MODELS["lgbm"] = joblib.load(lgbm_path)
+            print(f"[OK] Loaded Member 4 LightGBM Pipeline: {lgbm_path.name}")
+        except Exception as e:
+            print(f"[ERROR] Failed to load LightGBM model: {e}")
+    else:
+        print("[WARN] lightgbm_model.joblib not found at expected path.")
+
+    # 4. Load Member 2 (Wijesiri) Ridge Regression Pipeline
+    ridge_path = ROOT / "notebooks/Member_02_Wijesiri/ridge_model.joblib"
+    if not ridge_path.exists():
+        alt_ridge = ROOT / "ridge_model.joblib"
+        if alt_ridge.exists():
+            ridge_path = alt_ridge
+    if ridge_path.exists():
+        try:
+            MODELS["ridge"] = joblib.load(ridge_path)
+            print(f"[OK] Loaded Member 2 Ridge Pipeline: {ridge_path.name}")
+        except Exception as e:
+            print(f"[ERROR] Failed to load Ridge model: {e}")
+    else:
+        print("[WARN] ridge_model.joblib not found at expected path.")
+
+    # 4. Load baseline template row from raw Ames train.csv
     try:
         data_path = ROOT / "data/raw/house-prices-advanced-regression-techniques/train.csv"
         if data_path.exists():
@@ -156,6 +186,8 @@ def health_check():
         "models_ready": {
             "xgboost": "xgb" in MODELS,
             "random_forest": "rf" in MODELS,
+            "lightgbm": "lgbm" in MODELS,
+            "ridge": "ridge" in MODELS,
             "baseline": True
         },
         "python_version": sys.version.split()[0]
@@ -164,7 +196,7 @@ def health_check():
 
 @app.post("/api/predict")
 def predict_valuation(prop: PropertyInput):
-    """Run real live inference on the trained XGBoost and Random Forest .joblib pipelines."""
+    """Run real live inference on the trained XGBoost, Random Forest, LightGBM, and Ridge .joblib pipelines."""
     if TEMPLATE_ROW is None:
         raise HTTPException(status_code=500, detail="Base property schema is not loaded.")
 
@@ -217,14 +249,36 @@ def predict_valuation(prop: PropertyInput):
             print(f"[ERROR] Random Forest live inference error: {e}")
             predictions["rf"] = int(round(BASELINE_PRICE))
 
+    # 3. Real LightGBM Prediction (Member 4)
+    if "lgbm" in MODELS:
+        try:
+            log_pred = MODELS["lgbm"].predict(input_df)[0]
+            dollar_pred = float(np.expm1(log_pred))
+            predictions["lgbm"] = int(round(dollar_pred))
+        except Exception as e:
+            print(f"[ERROR] LightGBM live inference error: {e}")
+            predictions["lgbm"] = int(round(BASELINE_PRICE))
+
+    # 4. Real Ridge Regression Prediction (Member 2)
+    if "ridge" in MODELS:
+        try:
+            log_pred = MODELS["ridge"].predict(input_df)[0]
+            dollar_pred = float(np.expm1(log_pred))
+            predictions["ridge"] = int(round(dollar_pred))
+        except Exception as e:
+            print(f"[ERROR] Ridge live inference error: {e}")
+            predictions["ridge"] = int(round(BASELINE_PRICE))
+
     return {
         "status": "success",
         "source": "live_joblib_models",
         "inputs": prop.dict(),
         "predictions": predictions,
         "metrics": {
-            "xgb": {"name": "XGBoost Regressor", "rmse": 29675, "mae": 14831, "r2": 0.860},
-            "rf": {"name": "Random Forest", "rmse": 30815, "mae": 17506, "r2": 0.837},
+            "xgb": {"name": "XGBoost Regressor", "rmse": 28823, "mae": 15172, "r2": 0.868},
+            "ridge": {"name": "Ridge Regression", "rmse": 47413, "mae": 15895, "r2": 0.644},
+            "rf": {"name": "Random Forest", "rmse": 31640, "mae": 17491, "r2": 0.841},
+            "lgbm": {"name": "LightGBM Regressor", "rmse": 29093, "mae": 15644, "r2": 0.866},
             "baseline": {"name": "Baseline Model", "rmse": 81448, "mae": 55656, "r2": -0.052}
         }
     }

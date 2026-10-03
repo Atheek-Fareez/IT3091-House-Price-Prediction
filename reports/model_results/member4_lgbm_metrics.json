@@ -1,0 +1,30 @@
+{
+    "member": "Member 4 - Raashidh M.R.A. (IT24104169)",
+    "model_name": "LightGBM Regressor",
+    "baseline_benchmark": {
+        "rmse": 80701.60832828148,
+        "mae": 55655.36895262807,
+        "r2": -0.032657032756814086
+    },
+    "lgbm_performance": {
+        "rmse": 28828.740427546185,
+        "mae": 15516.415409976396,
+        "r2": 0.8682219542653646,
+        "train_r2": 0.9719047003325239,
+        "overfit_gap": 0.07982836356532219
+    },
+    "best_parameters": {
+        "regressor__colsample_bytree": 0.7,
+        "regressor__learning_rate": 0.03,
+        "regressor__max_depth": 6,
+        "regressor__n_estimators": 300,
+        "regressor__num_leaves": 31
+    },
+    "top_5_features": [
+        "TotalIndoorAreaSF",
+        "LotArea",
+        "GrLivArea",
+        "YearBuilt",
+        "OverallQual"
+    ]
+}
